@@ -13,7 +13,7 @@
 
 <div class="header fnt">
      <p> LOGISTICS MANAGEMENT SYSTEM </p>
-     <div id="current_date_time_block">  </div>
+     <div id="current_date_time_block"> null </div>
 </div>
 
 <form>
@@ -37,58 +37,60 @@
 </form>
 
     <div class="margin-block" />
-        <div class="app_back_panel table_pos">
-        <table id="display-table" class="table table-hover table_back" style="border-top:0px">
+        <div class="app_back_panel  table-scroll" onclick="highlight_row()">
+        <table id="display-table" class="table table-hover table_back table_mp" style="border-top:0px">
             <thead class="text-center">
             <th class="text-center" style="width: 6%"><a href="#" class="nav-link">Статус</a></th>
             <th class="text-center" style="width: 12%"><a href="#" class="nav-link">№ заявки</a></th>
             <th class="text-center" style="width: 40%"><a href="#" class="nav-link">Описание работ</a></th>
             <th class="text-center" style="width: 20%"><a href="#" class="nav-link">Место работы</a></th>
             <th class="text-center" style="width: 20%"><a href="#" class="nav-link">Время подачи</a></th>
-            <th  class="text-center" ><a href="#" class="nav-link">Цех</a></th>
+            <th class="text-center" ><a href="#" class="nav-link">Цех</a></th>
 
             </thead>
-            <tbody>
-            <tr>
-                <td align="center"> <span class="status red_col"></span> </td>
-                <td align="center">20-10-1</td>
-                <td align="center">Завоз воды</td>
-                <td align="center">ПСП, УКПГ</td>
-                <td align="center">8:00 - 20:00</td>
-                <td align="center"><span class="ceh_block ceh_green">ДСУ</span></td>
-            </tr>
-            <tr>
 
-                <td align="center"><span class="status green_col"></span></td>
-                <td align="center">20-10-2</td>
-                <td align="center">Прочистка внутренних дорог</td>
-                <td align="center">УКПГ</td>
-                <td align="center">9:20 - 15:00</td>
-                <td align="center"><span class="ceh_block ceh_orange">СПБО</span></td>
-            </tr>
-            <tr>
-                <td align="center"><span class="status new_col"></span></td>
-                <td align="center">20-10-3</td>
-                <td align="center">Погрузка снега</td>
-                <td align="center">ЯНКГМ-КП43-Скв316</td>
-                <td align="center">11:00 - 13:20</td>
-                <td align="center"><span class="ceh_block ceh_red">АСОИУ</span></td>
-            </tr>
-            <tr>
-                <td align="center"><span class="status ignored_col"></span></td>
-                <td align="center">20-10-4</td>
-                <td align="center">ТП: Промывка скважины</td>
-                <td align="center">ПСП</td>
-                <td align="center">11:00 - 13:20</td>
-                <td align="center"><span class="ceh_block ceh_red">СПБО</span></td>
+            <tbody class="tbody_mp">
+            <tr class="tr_mp" >
+
+                <td align="center" class="td_mp"><span class="status red_col"></span></td>
+                <td align="center" class="td_mp">20-10-1</td>
+                <td align="center" class="td_mp">Завоз воды</td>
+                <td align="center" class="td_mp">ПСП, УКПГ</td>
+                <td align="center" class="td_mp">8:00 - 20:00</td>
+                <td align="center" class="td_mp"><span class="ceh_block ceh_green">ДСУ</span></td>
+
             </tr>
 
-
+            <tr class="tr_mp">
+                <td align="center" class="td_mp"><span class="status green_col"></span></td>
+                <td align="center" class="td_mp">20-10-2</td>
+                <td align="center" class="td_mp">Прочистка внутренних дорог</td>
+                <td align="center" class="td_mp">УКПГ</td>
+                <td align="center" class="td_mp">9:20 - 15:00</td>
+                <td align="center" class="td_mp"><span class="ceh_block ceh_orange">СПБО</span></td>
+            </tr>
+            <tr class="tr_mp">
+                <td align="center" class="td_mp"><span class="status new_col"></span></td>
+                <td align="center" class="td_mp">20-10-3</td>
+                <td align="center" class="td_mp" >Погрузка снега</td>
+                <td align="center" class="td_mp">ЯНКГМ-КП43-Скв316</td>
+                <td align="center" class="td_mp">11:00 - 13:20</td>
+                <td align="center" class="td_mp"><span class="ceh_block ceh_red">АСОИУ</span></td>
+            </tr>
+            <tr class="tr_mp">
+                <td align="center" class="td_mp"><span class="status ignored_col"></span></td>
+                <td align="center" class="td_mp">20-10-4</td>
+                <td align="center" class="td_mp">ТП: Промывка скважины</td>
+                <td align="center" class="td_mp">ПСП</td>
+                <td align="center" class="td_mp">11:00 - 13:20</td>
+                <td align="center" class="td_mp"><span class="ceh_block ceh_red">СПБО</span></td>
+            </tr>
             </tbody>
         </table>
 </div>
-    <script> highlight_row()</script>
-    </form>
-        </div>
+    <div align="center">
+        <div class="margin-block"/>
+        <a name="" id="" class="btn btn-primary " href="#" role="button" onclick="addRow()"> Press to add 1 row!</a></div>
+<!--<script>highlight_row()</script> -->
 </body>
 </html>

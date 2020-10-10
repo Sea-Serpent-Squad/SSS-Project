@@ -8,7 +8,7 @@
 
 .fnt
 {
-    font-family: 'Roboto Thin', 'Segoe UI', sans-serif;
+    font-family: 'Roboto Mono', 'Segoe UI', monospace;
     font-size: 1em;
 }
 
@@ -94,13 +94,6 @@ a:focus
 
 /* */
 
-tr .r_bor
-{
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-spacing: 5px 30px;
-}
-
 .app_back_panel
 {
     background: #E6F1FA;
@@ -112,20 +105,21 @@ tr .r_bor
     justify-content: center;
 }
 
-table {
+.table_mp {
     border-collapse: separate;
     border-spacing:  0 10px;
     border: 5px solid transparent;
+
 }
 
-tr
+.tr_mp
 {
     border-top: 1px solid inherit;
     border-bottom: 1px solid;
 }
 
 
-td
+.td_mp
 {
     font-weight: bold;
     align-items: center;
@@ -179,7 +173,7 @@ td:last-of-type
     border: 4px solid #000000;
 }
 
-tbody
+.tbody_mp
 {
 
     background: #FAFDFF;
@@ -209,4 +203,26 @@ tbody
 .ceh_orange
 {
     background: #FBE5AD;
+}
+
+.table-scroll {
+    height: 500px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+/* Scroll style */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(80, 136, 179, 0.4);
+    border-radius: 10px;
 }

@@ -37,53 +37,53 @@
 </form>
 
     <div class="margin-block" />
-        <div class="app_back_panel  table-scroll" onclick="highlight_row()">
-        <table id="display-table" class="table table-hover table_back table_mp" style="border-top:0px">
+        <div class="app_back_panel table-scroll">
+        <table id="display-table" class="table table-hover table_back table_mp" style="border-top:0">
             <thead class="text-center">
-            <th class="text-center" style="width: 6%"><a href="#" class="nav-link">Статус</a></th>
-            <th class="text-center" style="width: 12%"><a href="#" class="nav-link">№ заявки</a></th>
-            <th class="text-center" style="width: 40%"><a href="#" class="nav-link">Описание работ</a></th>
-            <th class="text-center" style="width: 20%"><a href="#" class="nav-link">Место работы</a></th>
-            <th class="text-center" style="width: 20%"><a href="#" class="nav-link">Время подачи</a></th>
-            <th class="text-center" ><a href="#" class="nav-link">Цех</a></th>
+            <th class="text-center th_mp" style="width: 6%"><a href="#" class="nav-link">Статус</a></th>
+            <th class="text-center th_mp" style="width: 12%"><a href="#" class="nav-link">№ заявки</a></th>
+            <th class="text-center th_mp" style="width: 40%"><a href="#" class="nav-link">Описание работ</a></th>
+            <th class="text-center th_mp" style="width: 20%"><a href="#" class="nav-link">Место работы</a></th>
+            <th class="text-center th_mp" style="width: 20%"><a href="#" class="nav-link">Время подачи</a></th>
+            <th class="text-center th_mp" ><a href="#" class="nav-link">Цех</a></th>
 
             </thead>
 
             <tbody class="tbody_mp">
-            <tr class="tr_mp" >
+            <tr class="tr_mp priority_high" >
 
                 <td align="center" class="td_mp"><span class="status red_col"></span></td>
                 <td align="center" class="td_mp">20-10-1</td>
                 <td align="center" class="td_mp">Завоз воды</td>
                 <td align="center" class="td_mp">ПСП, УКПГ</td>
                 <td align="center" class="td_mp">8:00 - 20:00</td>
-                <td align="center" class="td_mp"><span class="ceh_block ceh_green">ДСУ</span></td>
+                <td align="center" class="td_mp">ДСУ</td>
 
             </tr>
 
-            <tr class="tr_mp">
+            <tr class="tr_mp priority_low">
                 <td align="center" class="td_mp"><span class="status green_col"></span></td>
                 <td align="center" class="td_mp">20-10-2</td>
                 <td align="center" class="td_mp">Прочистка внутренних дорог</td>
                 <td align="center" class="td_mp">УКПГ</td>
                 <td align="center" class="td_mp">9:20 - 15:00</td>
-                <td align="center" class="td_mp"><span class="ceh_block ceh_orange">СПБО</span></td>
+                <td align="center" class="td_mp">СПБО</td>
             </tr>
-            <tr class="tr_mp">
+            <tr class="tr_mp priority_mid">
                 <td align="center" class="td_mp"><span class="status new_col"></span></td>
                 <td align="center" class="td_mp">20-10-3</td>
-                <td align="center" class="td_mp" >Погрузка снега</td>
+                <td align="center" class="td_mp">Погрузка снега</td>
                 <td align="center" class="td_mp">ЯНКГМ-КП43-Скв316</td>
                 <td align="center" class="td_mp">11:00 - 13:20</td>
-                <td align="center" class="td_mp"><span class="ceh_block ceh_red">АСОИУ</span></td>
+                <td align="center" class="td_mp">АСОИУ</td>
             </tr>
-            <tr class="tr_mp">
+            <tr class="tr_mp priority_mid">
                 <td align="center" class="td_mp"><span class="status ignored_col"></span></td>
                 <td align="center" class="td_mp">20-10-4</td>
                 <td align="center" class="td_mp">ТП: Промывка скважины</td>
                 <td align="center" class="td_mp">ПСП</td>
                 <td align="center" class="td_mp">11:00 - 13:20</td>
-                <td align="center" class="td_mp"><span class="ceh_block ceh_red">СПБО</span></td>
+                <td align="center" class="td_mp">СПБО</td>
             </tr>
             </tbody>
         </table>
@@ -91,6 +91,6 @@
     <div align="center">
         <div class="margin-block"/>
         <a name="" id="" class="btn btn-primary " href="#" role="button" onclick="addRow()"> Press to add 1 row!</a></div>
-<!--<script>highlight_row()</script> -->
+        <script> highlight_row() </script>
 </body>
 </html>

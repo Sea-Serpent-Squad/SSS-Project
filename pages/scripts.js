@@ -27,7 +27,7 @@ function highlight_row() {
             alert(msg);
         }
     }*/
-    window.open("third_page.html","_self");
+   // window.open("third_page.html","_self");
 }
 setInterval(function () {
     document.getElementById('current_date_time_block').innerHTML = date_time();
@@ -62,8 +62,8 @@ function date_time()
 document.getElementById('current_date_time_block').innerHTML = date_time();
 
 /* Создание элемента для вставки */
-function td_stled_mp(text) {
-    let td = document.createElement("TD");
+function create_td_value(text) {
+    const td = document.createElement("TD");
     td.innerHTML = text;
     text.search('status') == -1 ? td.style.textAlign = "center" : td.align = "center";
     td.class = "td_mp";
@@ -76,12 +76,12 @@ function addRow()
     let tbody = document.getElementById("display-table").getElementsByTagName("TBODY")[0];
     let row = document.createElement("TR");
 
-    row.appendChild(td_stled_mp(' <span class="status red_col"></span> '));
-    row.appendChild(td_stled_mp('20-10-5'));
-    row.appendChild(td_stled_mp('Завоз воды'));
-    row.appendChild(td_stled_mp('ПСП, УКПГ'));
-    row.appendChild(td_stled_mp('8:00 - 20:00'));
-    row.appendChild(td_stled_mp('<span class="ceh_block ceh_green">ДСУ</span>'));
-
+    row.appendChild(create_td_value('<span class="status red_col"></span>'));
+    row.appendChild(create_td_value('20-10-5'));
+    row.appendChild(create_td_value('Завоз воды'));
+    row.appendChild(create_td_value('ПСП, УКПГ'));
+    row.appendChild(create_td_value('8:00 - 20:00'));
+    row.appendChild(create_td_value('<span class="ceh_block ceh_green">ДСУ</span>'));
+    row.setAttribute("border","1px solid rgba(0, 0, 0, 0.25)");
     tbody.appendChild(row);
 }

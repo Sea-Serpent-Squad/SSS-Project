@@ -71,7 +71,6 @@ select
     vertical-align: middle;
 }
 
-
 a
 {
     color: black;
@@ -101,7 +100,6 @@ a:focus
     box-sizing: border-box;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-
     justify-content: center;
 }
 
@@ -114,16 +112,20 @@ a:focus
 
 .tr_mp
 {
-    border-top: 1px solid inherit;
-    border-bottom: 1px solid;
+    border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
+.th_mp
+{
+    background: #E6F1FA;
+    top: 0;
+    position: sticky;
+}
 
 .td_mp
 {
     font-weight: bold;
     align-items: center;
-    border-top: inherit;
     border-bottom: inherit;
 }
 
@@ -140,7 +142,6 @@ td:last-of-type
     border-radius: 0 5px 5px 0;
     border-color:inherit;
 }
-
 
 /* Статусы */
 .status
@@ -172,10 +173,10 @@ td:last-of-type
     background-color: #FFFFFF;
     border: 4px solid #000000;
 }
+/* - Статусы */
 
 .tbody_mp
 {
-
     background: #FAFDFF;
     border: 1px solid rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
@@ -183,6 +184,7 @@ td:last-of-type
     border-top: transparent;
 }
 
+/* Цеха А НАДО ЛИ? Сейчас не используются*/
 .ceh_block
 {
     width: 200px;
@@ -204,9 +206,11 @@ td:last-of-type
 {
     background: #FBE5AD;
 }
+/*  - Цеха */
 
+/* Скролл таблицы */
 .table-scroll {
-    height: 500px;
+    height: 350px;
     overflow: scroll;
     overflow-x: hidden;
 }
@@ -225,4 +229,21 @@ td:last-of-type
 ::-webkit-scrollbar-thumb {
     background: rgba(80, 136, 179, 0.4);
     border-radius: 10px;
+}
+
+/* Приоритеты как цвета фона у tr: Красный - высокий приоритет, желтый - средний, зеленый - низкий
+ Светофор */
+.priority_high
+{
+    background: rgba(246, 206, 206, 1);
+}
+
+.priority_mid
+{
+    background: rgba(253, 255, 180, 1);
+}
+
+.priority_low
+{
+    background: rgba(191, 252, 186, 1);
 }

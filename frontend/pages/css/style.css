@@ -1,3 +1,110 @@
+/* шрифт и размер шрифта для разрешений меньше 1600px (по ширине)*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
+body
+{
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+}
+
+/* масштабирование шрифта и размеров контейнера при ширине экрана больше 1600px */
+@media only screen and (min-width : 1600px)
+{
+    .container { max-width: 1500px; }
+    body { font-size: 21px; }
+}
+
+dl { word-wrap: break-word; }
+
+dt { font-weight: normal; }
+
+dd { font-weight: bold; }
+
+.container
+{
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.app-back-panel
+{
+    background: #E6F1FA;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+/* Для виртуальной техники (которая как кнопка) */
+.selected
+{
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    background-color: #47E011;
+}
+
+.no-link
+{
+    pointer-events: none;
+}
+
+a.vehicle
+{
+    color: black;
+}
+
+a.vehicle[aria-expanded="true"]
+{
+    font-weight: bold;
+}
+
+/* Статусы */
+.status
+{
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 7px;
+}
+
+/* Статусы */
+.status_mp
+{
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: flex;
+    background-color:#FFFFFF;
+}
+
+/* - Статусы */
+
+.red-col
+{
+    background-color: #FF0000;
+}
+
+.green-col
+{
+    background-color: #47E011;
+}
+
+.new-col
+{
+    background-color: #FFFFFF;
+    border: 4px solid #5088B3;
+}
+
+.ignored-col
+{
+    background-color: #FFFFFF;
+    border: 4px solid #000000;
+}
+
+/* */
 .header
 {
 
@@ -8,7 +115,7 @@
 
 .fnt
 {
-    font-family: 'Roboto Mono', 'Segoe UI', monospace;
+    font-family: 'Roboto', 'Segoe UI', monospace;
     font-size: 1em;
 }
 
@@ -32,15 +139,15 @@ input[type=text]
 }
 
 /* style glyph */
-.inner-addon .glyphicon {
+.inner-addon .fas {
     position: absolute;
     padding: 10px;
     pointer-events: none;
 }
 
 /* align glyph */
-.left-addon .glyphicon  { left:  0px;}
-.right-addon .glyphicon { right: 0px;}
+.left-addon .fas  { left:  0px;}
+.right-addon .fas { right: 0px;}
 
 /* add padding  */
 .left-addon input  { padding-left:  30px; }
@@ -63,42 +170,16 @@ body {
     box-sizing: border-box;
     border-radius: 5px;
     padding-left:  1%;
-}
-
-select
-{
-    font-family: 'Roboto Thin', 'Segoe UI', sans-serif;
-    vertical-align: middle;
-}
-
-a
-{
-    color: black;
-}
-
-a:hover
-{
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-}
-
-
-a:focus
-{
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
+    margin: 0px;
 }
 
 /* */
 
-.app_back_panel
+.app_back_panel_mp
 {
     background: #E6F1FA;
     border: 1px solid rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
     justify-content: center;
 }
@@ -107,12 +188,13 @@ a:focus
     border-collapse: separate;
     border-spacing:  0 10px;
     border: 5px solid transparent;
-
 }
+
 
 .tr_mp
 {
     border: 1px solid rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
 }
 
 .th_mp
@@ -124,56 +206,27 @@ a:focus
 
 .td_mp
 {
-    font-weight: bold;
     align-items: center;
-    border-bottom: inherit;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
 }
 
 td:first-of-type
 {
-    border-left: 1px solid;
     border-radius: 5px 0 0 5px;
-    border-color:inherit;
 }
 
 td:last-of-type
 {
-    border-right: 1px solid;
     border-radius: 0 5px 5px 0;
-    border-color:inherit;
 }
 
-/* Статусы */
-.status
-{
-    height: 25px;
-    width: 25px;
-    border-radius: 50%;
-    display: flex;
+.hovertable tr:hover {
+    font-weight: bolder;
 }
-
-.red_col
-{
-    background-color: #FF0000;
+.hovertable tr.nohover:hover {
+    font-style: normal;
 }
-
-.green_col
-{
-    background-color: #47E011;
-}
-
-.new_col
-{
-    background-color: #FFFFFF;
-    border: 4px solid #5088B3;
-}
-
-.ignored_col
-{
-    background-color: #FFFFFF;
-    border: 4px solid #000000;
-}
-/* - Статусы */
 
 .tbody_mp
 {
@@ -182,37 +235,13 @@ td:last-of-type
     box-sizing: border-box;
     border-bottom: transparent;
     border-top: transparent;
-}
-
-/* Цеха А НАДО ЛИ? Сейчас не используются*/
-.ceh_block
-{
-    width: 200px;
-    height: 100px;
-    background: #D4D5DA;
-}
-
-.ceh_green
-{
-    background: rgba(71, 224, 17, 0.56);
-}
-
-.ceh_red
-{
-    background: rgba(255, 0, 0, 0.56) ;
-}
-
-.ceh_orange
-{
-    background: #FBE5AD;
-}
+} 
 /*  - Цеха */
 
 /* Скролл таблицы */
 .table-scroll {
     height: 350px;
-    overflow: scroll;
-    overflow-x: hidden;
+    overflow: auto;
 }
 /* Scroll style */
 ::-webkit-scrollbar {

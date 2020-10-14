@@ -2,8 +2,8 @@
 
 
 function highlight_row() {
-    /*let table = document.getElementById('display-table');
-    let cells = table.getElementsByTagName('td');
+    let table = document.getElementById('app_table');
+     let cells = table.getElementsByTagName('td');
 
     for (let i = 0; i < cells.length; i++) {
         // Take each cell
@@ -15,19 +15,17 @@ function highlight_row() {
 
             let rowsNotSelected = table.getElementsByTagName('tr');
             for (let row = 0; row < rowsNotSelected.length; row++) {
-                rowsNotSelected[row].style.backgroundColor = "";
-                rowsNotSelected[row].classList.remove('selected');
+                ///rowsNotSelected[row].style.backgroundColor = "";
+                ///rowsNotSelected[row].classList.remove('selected');
             }
             let rowSelected = table.getElementsByTagName('tr')[rowId];
-            rowSelected.style.backgroundColor = "yellow";
-            rowSelected.className += " selected";
+            //rowSelected.style.backgroundColor = "";
+            //rowSelected.className += " ";
 
-            let msg = 'The ID of the company is: ' + rowSelected.cells[0].innerHTML;
-            msg += '\nThe cell value is: ' + this.innerHTML;
+            window.open("second_page.html","_self");
             alert(msg);
         }
-    }*/
-   // window.open("third_page.html","_self");
+    }
 }
 setInterval(function () {
     document.getElementById('current_date_time_block').innerHTML = date_time();
@@ -73,15 +71,49 @@ function create_td_value(text) {
 /* Функция добавления строки таблицы */
 function addRow()
 {
-    let tbody = document.getElementById("display-table").getElementsByTagName("TBODY")[0];
+    let tbody = document.getElementById("app_table").getElementsByTagName("TBODY")[0];
     let row = document.createElement("TR");
 
-    row.appendChild(create_td_value('<span class="status red_col"></span>'));
+    row.appendChild(create_td_value('<span class="status_mp new-col"></span>'));
     row.appendChild(create_td_value('20-10-5'));
     row.appendChild(create_td_value('Завоз воды'));
     row.appendChild(create_td_value('ПСП, УКПГ'));
     row.appendChild(create_td_value('8:00 - 20:00'));
-    row.appendChild(create_td_value('<span class="ceh_block ceh_green">ДСУ</span>'));
+    row.appendChild(create_td_value('ДСУ'));
     row.setAttribute("border","1px solid rgba(0, 0, 0, 0.25)");
+    row.className = "priority_low";
     tbody.appendChild(row);
 }
+
+// - Получить элемент по ID
+function getElementByText(text)
+{
+    return document.getElementById(text);
+}
+
+// - Вывести иконку сортировки по возрастанию или по убыванию
+function headerValue_click(text) {
+    getElementByText(figureWas).style.visibility = 'hidden';
+    let element = getElementByText(text);
+    if (figureWas == text)
+    {
+        if (downSight)
+        {
+            element.className = figureUP;
+            downSight = false;
+        } else
+        {
+            element.className = figureDOWN;
+            downSight = true;
+        }
+    } else
+    {
+        downSight = true;
+    }
+    element.style.visibility = 'visible';
+    figureWas = text;
+}
+
+
+
+

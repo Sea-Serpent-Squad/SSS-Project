@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,26 +8,28 @@
     <link href="css/all.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <script src="js/scripts_mp.js"></script>
+    <title>Начальная страница - список заявок</title>
 </head>
+
 <body>
 
-<div class="margin-block"></div>
+    <div class="margin-block"></div>
 
-<div class="header fnt">
-     <p> LOGISTICS MANAGEMENT SYSTEM </p>
-     <div id="current_date_time_block"> null </div>
-</div>
-
-<form>
-    <div class="inner-addon left-addon">
-        <i class="fas fa-search"></i>
-        <input type="text" class="form-control fnt" placeholder="Поиск заявки (прим., 18-06-1)"/>
+    <div class="header fnt">
+        <p> LOGISTICS MANAGEMENT SYSTEM </p>
+        <div id="current_date_time_block"> null </div>
     </div>
-</form>
 
-<div class="margin-block"/>
+    <form>
+        <div class="inner-addon left-addon">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-control fnt" placeholder="Поиск заявки (прим., 18-06-1)" />
+        </div>
+    </form>
 
-<form>
+    <div class="margin-block" />
+
+    <form>
         <div class="form-row sort-filter text-center">
             <div class="col-auto my-1" style="display: flex">
                 <label class="mr-sm-2 text-nowrap text-sm-left d-flex  align-items-center" style="margin: 0" for="inlineFormCustomSelect">Отфильтровать по:</label>
@@ -37,79 +40,67 @@
                     <option value="4" class="priority_low">Приоритет: низкий</option>
                 </select>
             </div>
-    </div>
-</form>
-<div class="margin-block"/>
-    <form>
-        <div class="table-scroll app_back_panel_mp hovertable">
-        <table class="table table-hover  table_mp table-borderless" id="app_table">
-            <thead>
-            <tr align="center" class="nohover">
-                <th class="th_mp" onclick="headerValue_click('sortFigSt')"> <span class="fas fa-sort-amount-down-alt" id="sortFigSt" style="visibility: hidden"></span>Статус</th>
-                <th class="th_mp" scope="col" onclick="headerValue_click('sortFigN')"> <span class="fas fa-sort-amount-down-alt" id="sortFigN" style="visibility: hidden"></span>  № заявки</th>
-                <th class="th_mp" scope="col" onclick="headerValue_click('sortFigAb')"><span class="fas fa-sort-amount-down-alt" id="sortFigAb" style="visibility: hidden"></span>Описание работ</th>
-                <th class="th_mp" scope="col" onclick="headerValue_click('sortFigPl')"><span class="fas fa-sort-amount-down-alt" id="sortFigPl" style="visibility: hidden"></span>Место работы</th>
-                <th class="th_mp" scope="col" onclick="headerValue_click('sortFigTi')"><span class="fas fa-sort-amount-down-alt" id="sortFigTi" style="visibility: hidden"></span>Время подачи</th>
-                <th class="th_mp" scope="col" onclick="headerValue_click('sortFigMan')"><span class="fas fa-sort-amount-down-alt" id="sortFigMan" style="visibility: hidden"></span>Цех</th>
-            </tr>
-            </thead>
-            <tbody class="tbody_mp" >
-
-            <tr class="tr_mp priority_high tr_hov" >
-                <td align="center" class="td_mp"><span class="status_mp green-col"></span></td>
-                <td align="center" class="td_mp">20-10-1</td>
-                <td align="center" class="td_mp">Завоз воды</td>
-                <td align="center" class="td_mp">ПСП, УКПГ</td>
-                <td align="center" class="td_mp">8:00 - 20:00</td>
-                <td align="center" class="td_mp">ДСУ</td>
-            </tr>
-
-            <tr class="tr_mp priority_low tr_hov">
-                <td align="center" class="td_mp"><span class="status_mp red-col"></span></span></td>
-                <td align="center" class="td_mp">20-10-2</td>
-                <td align="center" class="td_mp">Прочистка внутренних дорог</td>
-                <td align="center" class="td_mp">УКПГ</td>
-                <td align="center" class="td_mp">9:20 - 15:00</td>
-                <td align="center" class="td_mp">СПБО</td>
-            </tr>
-            <tr class="tr_mp priority_mid tr_hov">
-                <td align="center" class="td_mp"><span class="status_mp new-col"></span></td>
-                <td align="center" class="td_mp">20-10-3</td>
-                <td align="center" class="td_mp">Погрузка снега</td>
-                <td align="center" class="td_mp">ЯНКГМ-КП43-Скв316</td>
-                <td align="center" class="td_mp">11:00 - 13:20</td>
-                <td align="center" class="td_mp">АСОИУ</td>
-            </tr>
-            <tr class="tr_mp priority_mid tr_hov">
-                <td align="center" class="td_mp"><span class="status_mp ignored-col"></span></td>
-                <td align="center" class="td_mp">20-10-4</td>
-                <td align="center" class="td_mp">ТП: Промывка скважины</td>
-                <td align="center" class="td_mp">ПСП</td>
-                <td align="center" class="td_mp">11:00 - 13:20</td>
-                <td align="center" class="td_mp">СПБО</td>
-            </tr>
-            </tbody>
-        </table>
         </div>
-
     </form>
+    <div class="margin-block">
+        <form>
+            <div class="table-scroll app_back_panel_mp hovertable">
+                <table class="table table-hover  table_mp table-borderless" id="app_table">
+                    <thead>
+                        <tr align="center" class="nohover">
+                            <th class="th_mp" scope="col"><span class="fas fa-sort-amount-down-alt" id="sortFigSt" style="visibility: hidden"></span>Статус</th>
+                            <th class="th_mp" scope="col"><span class="fas fa-sort-amount-down-alt" id="sortFigN" style="visibility: hidden"></span> № заявки</th>
+                            <th class="th_mp" scope="col"><span class="fas fa-sort-amount-down-alt" id="sortFigAb" style="visibility: hidden"></span>Описание работ</th>
+                            <th class="th_mp" scope="col"><span class="fas fa-sort-amount-down-alt" id="sortFigPl" style="visibility: hidden"></span>Место работы</th>
+                            <th class="th_mp" scope="col"><span class="fas fa-sort-amount-down-alt" id="sortFigTi" style="visibility: hidden"></span>Время подачи</th>
+                            <th class="th_mp" scope="col"><span class="fas fa-sort-amount-down-alt" id="sortFigMan" style="visibility: hidden"></span>Цех</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tbody_mp">
 
+                        <tr class="tr_mp priority_high tr_hov">
+                            <td align="center" class="td_mp"><span class="status_mp green-col"></span></td>
+                            <td align="center" class="td_mp">20-10-1</td>
+                            <td align="center" class="td_mp">Завоз воды</td>
+                            <td align="center" class="td_mp">ПСП, УКПГ</td>
+                            <td align="center" class="td_mp">8:00 - 20:00</td>
+                            <td align="center" class="td_mp">ДСУ</td>
+                        </tr>
 
+                        <tr class="tr_mp priority_low tr_hov">
+                            <td align="center" class="td_mp"><span class="status_mp red-col"></span></td>
+                            <td align="center" class="td_mp">20-10-2</td>
+                            <td align="center" class="td_mp">Прочистка внутренних дорог</td>
+                            <td align="center" class="td_mp">УКПГ</td>
+                            <td align="center" class="td_mp">9:20 - 15:00</td>
+                            <td align="center" class="td_mp">СПБО</td>
+                        </tr>
+                        <tr class="tr_mp priority_mid tr_hov">
+                            <td align="center" class="td_mp"><span class="status_mp new-col"></span></td>
+                            <td align="center" class="td_mp">20-10-3</td>
+                            <td align="center" class="td_mp">Погрузка снега</td>
+                            <td align="center" class="td_mp">ЯНКГМ-КП43-Скв316</td>
+                            <td align="center" class="td_mp">11:00 - 13:20</td>
+                            <td align="center" class="td_mp">АСОИУ</td>
+                        </tr>
+                        <tr class="tr_mp priority_mid tr_hov">
+                            <td align="center" class="td_mp"><span class="status_mp ignored-col"></span></td>
+                            <td align="center" class="td_mp">20-10-4</td>
+                            <td align="center" class="td_mp">ТП: Промывка скважины</td>
+                            <td align="center" class="td_mp">ПСП</td>
+                            <td align="center" class="td_mp">11:00 - 13:20</td>
+                            <td align="center" class="td_mp">СПБО</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-</div>
-    <div align="center">
-        <div class="margin-block"/>
-       <a name="" id="add_row_btn" class="btn btn-primary " href="#" role="button" onclick="addRow()"> Press to add 1 row!</a>
+        </form>
     </div>
-        <script>
-        // IDK как сделать это без ошибки, чтобы работала функция
-        let figureWas = 'sortFigSt';   // Figure of down/up was
-        let downSight = true; // true - DOWN, false - UP
-        // - Флаг где был видел знак и в какую сторону стрелка у значка
-        // - Для замены вверх/вниз
-        let figureDOWN = 'fas fa-sort-amount-down-alt'; // to put figure
-        let figureUP =  'fas fa-sort-amount-up-alt';
-        highlight_row();
-        </script>
+    <div align="center">
+        <div class="margin-block" />
+        <a name="" id="add_row_btn" class="btn btn-primary " href="#" role="button" onclick="addRow()"> Press to add 1 row!</a>
+    </div>
 </body>
+
 </html>

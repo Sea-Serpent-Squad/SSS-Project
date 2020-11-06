@@ -1,6 +1,8 @@
-
 // пройдемся во всей виртуальной технике и привяжем реакцию на событие, т.е сделаем, чтобы при нажатии на вирт. технику она выделялась кружком (selected vehicle)
 // и соответственно выделение снималось, когда нажали на другую вирт. технику (или на ту же самую еще один раз)
+
+let timeline1, timeline2
+
 function prepareCollapse()
 {
     document.querySelectorAll(".virt-vehicle").forEach((elem) => {
@@ -35,7 +37,8 @@ function vehicleChoice()
             veh.classList.add("text-primary");
             let driver_row = veh.parentElement.nextElementSibling;
             driver_row.classList.remove("disabled"); 
-            /* На этом месте мы добавляем в таймлайн дорогу */
+            /* Вставка таймлайна с дорогой*/
+            timeline.addItem({ id: 0, group: 0, className: 'drive', content:'', start: vis.moment.utc(new Date("2020-10-31T10:00")), end: vis.moment.utc(new Date("2020-10-31T11:00")) })
             veh.click();
         });
     });
@@ -76,14 +79,6 @@ function addNewVehicle()
 }
 
 
-
-
-
-
-
-
-
-
 // 3 мусор
 function op_mp() {
     if (confirm("Вы точно хотите вернуться на главную страницу без сохранения результата?"))
@@ -114,4 +109,15 @@ $(document).ready(() => {
     prepareCollapse();
     addNewVehicle();
     vehicleChoice();
+    // - Добавим таймлайн
+   timeline = new Timeline('timeline1',[
+        { id: 1, group: 1, className: 'bold rounded', start: vis.moment.utc(new Date('2020-10-31T11:00')), end: vis.moment.utc(new Date('2020-10-31T11:30')) },
+        { id: 2, group: 2, className: 'normal rounded', content:'', start: vis.moment.utc(new Date("2020-10-31T11:30")), end: vis.moment.utc(new Date("2020-10-31T13:00")) },
+        { id: 3, group: 3, className: 'bold rounded', content:' ', start: vis.moment.utc(new Date("2020-10-31T13:00")), end: vis.moment.utc(new Date("2020-10-31T13:20")) }
+    ])
+    /*
+   timeline2 = new Timeline('timeline2',[
+        { id: 1, group: 1, className: 'normal rounded', content:' ', start: vis.moment.utc(new Date("2020-10-31T11:00")), end: vis.moment.utc(new Date("2020-10-31T13:20")) }
+    ], {orientation:'bottom'})
+*/
 });

@@ -47,12 +47,17 @@ dd {
     pointer-events: none;
 }
 
-a.vehicle {
+a {
     color: black;
 }
 
-a.vehicle[aria-expanded="true"] {
+a.virt-vehicle[aria-expanded="true"] {
     font-weight: bold;
+}
+
+.disabled
+{
+    display: none;
 }
 
 /* Статусы */

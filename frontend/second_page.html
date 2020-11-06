@@ -49,17 +49,28 @@
             <!-- Список с виртуальной техникой -->
             <div id="virt-list-of-vehicles" class="col">
                 <dl class="row">
-                    <div class="col-5">Техника</div>
-                    <div class="col-3">Локация</div>
-                    <div class="col text-center">Операция</div>
+                    <div class="col-5 font-weight-bold">Техника</div>
+                    <div class="col-3 font-weight-bold">Локация</div>
+                    <div class="col text-center font-weight-bold">Операция</div>
                 </dl>
                 <dl class="row mt-5">
-                    <a class="vehicle col-5 m-auto" data-toggle="collapse" role="button" href="#vehicle1"><span></span><span>ВТ1: Промывки</span></a>
+                    <a class="virt-vehicle col-5 m-auto" data-toggle="collapse" role="button" href="#vehicle1"><span></span><span>ВТ1: Промывки</span></a>
                     <dd class="col-3 m-auto">ПСП - СПБО</dd>
                     <dd class="col text-center m-auto">Подбивка<br>Промывка 30м<sup>3</sup><br>Отбивка</dd>
                 </dl>
+                <dl class="row mt-5 disabled">
+                    <div class="col-5 font-weight-bold">Исполнитель</div>
+                    <dd class="col-3">
+                        <select class="custom-select mr-sm-2 text-center" id="inlineFormCustomSelects1" >
+                            <option value="1">М3-1</option>
+                            <option value="2">М3-2</option>
+                            <option value="3">М3-3</option>
+                            <option value="4">М3-4</option>
+                        </select>
+                    </dd>
+                </dl>
                 <dl class="row mt-5">
-                    <a class="vehicle col-5 m-auto" data-toggle="collapse" role="button" href="#vehicle2"><span></span><span>ВТ2: Самосвал MAN</span></a>
+                    <a class="virt-vehicle col-5 m-auto" data-toggle="collapse" role="button" href="#vehicle2"><span></span><span>ВТ2: Обесп. водой</span></a>
                     <dd class="col-3 m-auto">ПСП - СПБО</dd>
                     <dd class="col text-center m-auto">Промывка 30м<sup>3</sup></dd>
                 </dl>
@@ -69,11 +80,48 @@
             <div id="timeline1" class="col"><img src="img/img1.jpg" style="width: 100%"></div>
         </dl>
     </div>
-    <!-- Контейнер с настоящей техникой -->
+    <!-- Контейнер с настоящей техникой и таймлайном -->
     <div id="collapse-list-of-vehicles">
         <div class="collapse" id="vehicle1">
             <div class="container mt-4 app-back-panel">
-                Промывки<br>Промывки<br>Промывки<br>Промывки
+                <div class="row mt-3 mb-5">
+                    <!-- Список с настоящей техникой -->
+                    <div id="list-of-vehicles-1" class="col-3 ml-2">
+                        <div class="row">
+                            <div class="col mb-5">Свободная техника</div>
+                        </div>
+                        <div id="list-of-free-vehicles-1">
+                            <div class="row mt-4">
+                                <a class="col font-weight-bold">Х327ЕХ/138</a>
+                            </div>
+                            <div class="row mt-4">
+                                <a class="col font-weight-bold">К312ВН/138</a>
+                            </div>
+                            <div class="row mt-4">
+                                <a class="col font-weight-bold">В748АО/138</a>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col mb-4">Занятая техника</div>
+                        </div>
+                        <div class="row mt-4">
+                            <a class="col font-weight-bold">К046ВA/138</a>
+                        </div>
+                        <div class="row mt-4">
+                            <a class="col font-weight-bold">Г016ВУ/138</a>
+                        </div>
+                    </div>
+                    <!-- Таймлайн свободной техники -->
+                    <div class="col">
+                        <div class="row">
+                            <div id="timeline-free-vehicle" class="col"><img src="img/img2.jpg" style="width: 100%"></div>
+                        </div>
+                        <!-- Таймлайн занятой техники -->
+                        <div class="row">
+                            <div id="timeline-busy-vehicle" class="col"><img src="img/img3.jpg" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="collapse" id="vehicle2">
@@ -87,8 +135,8 @@
 
 
     <div id="info-headers" class="container mt-3 " style="margin-bottom: 1%; display:flex; justify-content: space-between">
-        <button type="button" class="btn btn-danger fnt" id="to_mp"> Вернуться в журнал </button>
-        <button type="button" class="btn btn-success fnt" id="add_save"> Перейти к назначению </button>
+        <button type="button" class="btn btn-danger fnt" id="to_mp"> Вернуться в журнал без сохранения </button>
+        <button type="button" class="btn btn-success fnt" id="add_save"> Назначить и вернуться в журнал </button>
     </div>
 
 </body>

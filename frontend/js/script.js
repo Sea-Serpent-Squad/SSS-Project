@@ -1,10 +1,9 @@
 // пройдемся во всей виртуальной технике и привяжем реакцию на событие, т.е сделаем, чтобы при нажатии на вирт. технику она выделялась кружком (selected vehicle)
 // и соответственно выделение снималось, когда нажали на другую вирт. технику (или на ту же самую еще один раз)
 
-let timeline1, timeline2
+let timeline1, timeline2;
 
-function prepareCollapse()
-{
+function prepareCollapse() {
     document.querySelectorAll(".virt-vehicle").forEach((elem) => {
         // при клике скрываем текущий открытый блок div collapse
         $(elem).on('click', () => {
@@ -13,11 +12,15 @@ function prepareCollapse()
         // выделяем кружком и блокируем нажатия на ссылки пока не раскроется блок с настоящ. техникой
         $(elem.getAttribute("href")).on('show.bs.collapse', () => {
             elem.children[0].classList.add("selected");
-            document.querySelectorAll(".virt-vehicle").forEach((elem) => { elem.classList.add("no-link") });
+            document.querySelectorAll(".virt-vehicle").forEach((elem) => {
+                elem.classList.add("no-link")
+            });
         });
         // как только раскрылся, включаем ссылки обратно
         $(elem.getAttribute("href")).on('shown.bs.collapse', () => {
-            document.querySelectorAll(".virt-vehicle").forEach((elem) => { elem.classList.remove("no-link") });
+            document.querySelectorAll(".virt-vehicle").forEach((elem) => {
+                elem.classList.remove("no-link")
+            });
         });
         // убираем кружок при закрытии блока с техникой
         $(elem.getAttribute("href")).on('hide.bs.collapse', () => {
@@ -26,19 +29,23 @@ function prepareCollapse()
     });
 }
 
-function vehicleChoice()
-{
+function vehicleChoice() {
     let arr = Array.from(document.querySelector("#list-of-free-vehicles-1").children);
     arr.forEach((elem) => {
         elem.children[0].addEventListener('click', () => {
             let veh = document.querySelector('a[href="#vehicle1"]');
             veh.children[1].innerText = elem.children[0].innerText;
-            veh.parentElement.children[2].insertAdjacentHTML('afterbegin',"Дорога<br>");
             veh.classList.add("text-primary");
             let driver_row = veh.parentElement.nextElementSibling;
-            driver_row.classList.remove("disabled"); 
+            driver_row.classList.remove("disabled");
             /* Вставка таймлайна с дорогой*/
-            timeline.addItem('2020-10-31',{ id: 5, group: 0, className: 'drive', start:'10:00', end: '10:59' })
+            timeline.addItem('2020-10-31', {
+                id: 5,
+                group: 0,
+                className: 'drive',
+                start: '10:00',
+                end: '10:59'
+            })
             veh.click();
         });
     });
@@ -48,8 +55,7 @@ function vehicleChoice()
 let vehicleCount = 2;
 
 // эта функция привязывает добавление новой вирт. техники к кнопке
-function addNewVehicle()
-{
+function addNewVehicle() {
     document.getElementById("btn-create").addEventListener('click', () => {
         // закрываем открытый блок collapse
         $('.collapse.show').collapse('hide');
@@ -62,15 +68,15 @@ function addNewVehicle()
         let vehicleName = newRow.children[0];
         let vehiclePlace = newRow.children[1];
         let vehicleOper = newRow.children[2];
-        vehicleName.setAttribute("href","#vehicle" + (++vehicleCount));
+        vehicleName.setAttribute("href", "#vehicle" + (++vehicleCount));
         vehicleName.children[1].innerHTML = "ВТ" + vehicleCount + ": Сгенерированная техника";
         vehiclePlace.innerHTML = "unknown place";
         vehicleOper.innerHTML = "unknown operation";
-        list.insertBefore(newRow,list.lastElementChild);
+        list.insertBefore(newRow, list.lastElementChild);
         let collapseList = document.getElementById("collapse-list-of-vehicles");
         let newCollapse = document.createElement("div");
         newCollapse.className = "collapse";
-        newCollapse.setAttribute("id","vehicle" + vehicleCount);
+        newCollapse.setAttribute("id", "vehicle" + vehicleCount);
         newCollapse.innerHTML = collapseList.children[0].innerHTML;
         newCollapse.children[0].innerText = "Невиртуальная сгенерированная техника №" + vehicleCount;
         collapseList.appendChild(newCollapse);
@@ -78,17 +84,14 @@ function addNewVehicle()
     });
 }
 
-
-// 3 мусор
 function op_mp() {
     if (confirm("Вы точно хотите вернуться на главную страницу без сохранения результата?"))
-    window.open("main_page.html", "_self")
+        window.open("main_page.html", "_self");
 }
 
 function op_save() {
-    window.open("main_page.html", "_self")
+    window.open("main_page.html", "_self");
 }
-
 
 function nextMsg() {
     if (messages.length == 0) {
@@ -104,23 +107,43 @@ var messages = [
 
 // как только документ прогрузится вызвать эти функции
 $(document).ready(() => {
-    document.getElementById('to_mp').addEventListener('click',()=>op_mp());
-    document.getElementById('add_save').addEventListener('click',()=>nextMsg());
+    document.getElementById('to_mp').addEventListener('click', () => op_mp());
+    document.getElementById('add_save').addEventListener('click', () => nextMsg());
     prepareCollapse();
     addNewVehicle();
     vehicleChoice();
     // - Добавим таймлайн
 
-    timeline = new Timeline('timeline1', '2020-10-31',[
-        { id: 1, group: 1, className: 'bold rounded', start: '11:00',   end:'11:30' },
-        { id: 4, group: 1, className: 'bold rounded', start: '12:00',   end:'13:30' },
-        { id: 2, group: 2, className: 'normal rounded', start: '11:30', end: '13:00' },
-        { id: 3, group: 3, className: 'bold rounded', start:'13:00',    end: '13:20' }
-    ])
+    timeline = new Timeline('timeline1', '2020-10-31', [{
+            id: 1,
+            group: 1,
+            className: 'bold rounded',
+            start: '11:00',
+            end: '11:30'
+        },
+        {
+            id: 2,
+            group: 2,
+            className: 'normal rounded',
+            start: '11:30',
+            end: '13:00'
+        },
+        {
+            id: 3,
+            group: 3,
+            className: 'bold rounded',
+            start: '13:00',
+            end: '13:20'
+        }
+    ]);
 
 
-    timeline2 = new Timeline('timeline2', '2020-10-31',[
-        { id: 1, group: 1, className: 'bold rounded', start: '11:00',   end:'11:30' }
-    ], 'bottom')
+    timeline2 = new Timeline('timeline2', '2020-10-31', [{
+        id: 1,
+        group: 1,
+        className: 'bold rounded',
+        start: '11:00',
+        end: '11:30'
+    }], 'bottom');
 
 });

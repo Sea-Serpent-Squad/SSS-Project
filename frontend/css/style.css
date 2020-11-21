@@ -312,6 +312,12 @@ select {
     background-color: rgba(243, 156, 157, 1) !important;
 }
 
+.vis-item.transparent
+{
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
 .vis-item.work
 {
     background-color: rgba(150, 236, 121, 1) !important;

@@ -38,7 +38,7 @@ function vehicleChoice()
             let driver_row = veh.parentElement.nextElementSibling;
             driver_row.classList.remove("disabled"); 
             /* Вставка таймлайна с дорогой*/
-            timeline.addItem({ id: 0, group: 0, className: 'drive', content:'', start: vis.moment.utc(new Date("2020-10-31T10:00")), end: vis.moment.utc(new Date("2020-10-31T11:00")) })
+            timeline.addItem('2020-10-31',{ id: 5, group: 0, className: 'drive', start:'10:00', end: '10:59' })
             veh.click();
         });
     });
@@ -110,14 +110,17 @@ $(document).ready(() => {
     addNewVehicle();
     vehicleChoice();
     // - Добавим таймлайн
-   timeline = new Timeline('timeline1',[
-        { id: 1, group: 1, className: 'bold rounded', start: vis.moment.utc(new Date('2020-10-31T11:00')), end: vis.moment.utc(new Date('2020-10-31T11:30')) },
-        { id: 2, group: 2, className: 'normal rounded', content:'', start: vis.moment.utc(new Date("2020-10-31T11:30")), end: vis.moment.utc(new Date("2020-10-31T13:00")) },
-        { id: 3, group: 3, className: 'bold rounded', content:' ', start: vis.moment.utc(new Date("2020-10-31T13:00")), end: vis.moment.utc(new Date("2020-10-31T13:20")) }
+
+    timeline = new Timeline('timeline1', '2020-10-31',[
+        { id: 1, group: 1, className: 'bold rounded', start: '11:00',   end:'11:30' },
+        { id: 4, group: 1, className: 'bold rounded', start: '12:00',   end:'13:30' },
+        { id: 2, group: 2, className: 'normal rounded', start: '11:30', end: '13:00' },
+        { id: 3, group: 3, className: 'bold rounded', start:'13:00',    end: '13:20' }
     ])
-    /*
-   timeline2 = new Timeline('timeline2',[
-        { id: 1, group: 1, className: 'normal rounded', content:' ', start: vis.moment.utc(new Date("2020-10-31T11:00")), end: vis.moment.utc(new Date("2020-10-31T13:20")) }
-    ], {orientation:'bottom'})
-*/
+
+
+    timeline2 = new Timeline('timeline2', '2020-10-31',[
+        { id: 1, group: 1, className: 'bold rounded', start: '11:00',   end:'11:30' }
+    ], 'bottom')
+
 });

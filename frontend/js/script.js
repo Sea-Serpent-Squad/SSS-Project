@@ -45,7 +45,7 @@ function vehicleChoice() {
                 className: 'drive',
                 start: '10:00',
                 end: '10:59'
-            })
+            }, 'Дорога')
             veh.click();
         });
     });
@@ -135,7 +135,8 @@ $(document).ready(() => {
             start: '13:00',
             end: '13:20'
         }
-    ]);
+    ],
+    groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
 
 
     timeline2 = new Timeline('timeline2', '2020-10-31', [{
@@ -144,6 +145,6 @@ $(document).ready(() => {
         className: 'bold rounded',
         start: '11:00',
         end: '11:30'
-    }], 'bottom');
+    }], groupNames = ['Промывка 30 м<sup>3</sup>'],'bottom');
 
 });

@@ -45,10 +45,12 @@ class Timeline extends DOMElement {
     // - timeIntervals = временные отрезки, когда происходят работы. (прим., 11:00). Состоят из id, group, className, времяНачала, времяКонец
     // - orientation = ориентация у даты таймлайна, которая отображается над, под таймлайном, или не отображается вообще ('top','bottom','none' соответственно)
     // - min max считается автоматически из первого значения и устанавливают во сколько начинается рабочий день (31.10.2020 - 8:00 - 31.10.2020 - 20:00)
+    // - GroupNames = название наших работ
     constructor(div,
         date,
         timeIntervals,
-        orientation = 'top'
+        groupNames,
+        orientation = 'top',
     ) {
         super(div);
         this.items = new vis.DataSet(this.formDataSet(date, timeIntervals));
@@ -58,9 +60,10 @@ class Timeline extends DOMElement {
             if (!set.has(element['group'])) set.add(element['group']);
         });
         let array = [];
+        let i = 0;
         for (const element of set) array.push({
             id: element,
-            content: 'groupName'
+            content: groupNames[i++]
         });
         this.groups = new vis.DataSet(array);
 
@@ -77,7 +80,8 @@ class Timeline extends DOMElement {
 
     // - Добавление элементов
     // - Группу нужно добавить, поэтому пересортируем имеющееся и добавим новую группу
-    addItem(date, item) {
+    // - workName - название новой группы, в данном случае - название добавляемой работы, если оно не добавляется к имеющемуся
+    addItem(date, item, workName = '') {
         let check = function (array, element) {
             for (const value of array) {
                 if (value['id'] === element) return false;
@@ -88,7 +92,7 @@ class Timeline extends DOMElement {
         if (check(this.groups.get(), item['group'])) {
             let arr = [...this.groups.get(), {
                 id: item['group'],
-                content: ''
+                content: workName
             }].sort((a, b) => a.id - b.id).slice();
             this.groups.clear();
             arr.forEach(element => this.groups.add(element));

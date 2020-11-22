@@ -8,14 +8,12 @@
     <link href="css/all.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <script src="js/scripts_mp.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <title>Начальная страница - список заявок</title>
 </head>
 
 <body>
-
-    <div class="margin-block"></div>
-
-    <div class="header fnt">
+    <div class="header mt-3 fnt">
         <p> LOGISTICS MANAGEMENT SYSTEM </p>
         <div id="current_date_time_block"></div>
     </div>
@@ -41,7 +39,7 @@
                     <option value="4" class="priority-low">только низкий</option>
                 </select>
             </div>
-            <!-- отсуп -->
+            <!-- отступ -->
             <p style="width: 37.8%"></p>
             <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center ju" style="margin: 0" for="inlineFormCustomSelect">Дата начала:
             <input type="date" id="date_start" name="trip-start" class="fnt mr-sm-2 custom-select date-picker"

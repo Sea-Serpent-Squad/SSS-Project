@@ -86,11 +86,11 @@ function addNewVehicle() {
 
 function op_mp() {
     if (confirm("Вы точно хотите вернуться на главную страницу без сохранения результата?"))
-        window.open("main_page.html", "_self");
+        window.open("/", "_self");
 }
 
 function op_save() {
-    window.open("main_page.html", "_self");
+    window.open("/", "_self");
 }
 
 function nextMsg() {

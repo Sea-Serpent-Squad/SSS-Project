@@ -36,7 +36,18 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-rl.on('line', (input) => {
-    let s = input.split(' ');
-    io.emit("newRow", {orderID: s[0], orderName: s[1]});
+rl.on('line', (input_str) => {
+    let i = input_str.search(":");
+    let command = input_str.substr(0, i);
+    let arg = input_str.substr(i+2);
+    if (command == "newRow")
+    {
+        let s = arg.split(',');
+        io.emit(command, {orderID: s[0], orderName: s[1]});
+    }
+    else {
+        console.log("Wrong input");
+    }
 });
+
+rl.on('SIGINT', () => { process.exit(); });

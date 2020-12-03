@@ -1,3 +1,6 @@
+
+
+
 // глобальные переменные, потом добавим в класс
 let figureWas = 'sortFigSt'; // Figure of down/up was
 let downSight = true; // true - DOWN, false - UP
@@ -12,6 +15,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     socket.on('newRow', (data) => {
         addRow(data.orderID, data.orderName);
     })
+
+
+
     // привяжем действия при клике на кнопки сортировки
     document.querySelectorAll(".th-mp").forEach((elem) => {
         let id = elem.querySelector('span').getAttribute('id');
@@ -30,6 +36,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
     document.getElementById("search-edit").addEventListener('input', setFilter);
     /* Событие у ввода фильтра в input[text] это такой же фильтр, как и выбор приоритета, поэтому у них один обработчик установки фильтра */
     document.getElementById("filter-priority").addEventListener('change', setFilter);
+
+
+
+
+
+
+
+
+
 });
 
 //  - Проверка нахождения в строке

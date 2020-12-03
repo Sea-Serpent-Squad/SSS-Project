@@ -6,6 +6,14 @@ const io = require('socket.io')(http);
 const path = require('path');
 const port = 80;
 
+
+
+let baseHandler = require('./database.js')
+
+let baseUsing = new baseHandler()
+
+baseUsing.getStartEndPoint(1);
+
 // открываем доступ к статике, т.е к папке public (css, js, картинки)
 app.use(express.static("../frontend/public/"));
 // главная страница
@@ -14,8 +22,11 @@ app.get('/', (req, res) => {
 });
 // временно так, а вообще будет для каждой заявки /order/@ID, где вместо @ID - номер заявки
 app.get('/order/20-10-4', (req, res) => {
+    // baseUsing.testQuery();
     res.sendFile(path.join(__dirname, '../frontend/pages', 'second_page.html'));
 });
+
+
 // сокеты
 io.on('connection', (socket) => {
     console.log(socket.id + 'user connected');
@@ -51,3 +62,4 @@ rl.on('line', (input_str) => {
 });
 
 rl.on('SIGINT', () => { process.exit(); });
+

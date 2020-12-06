@@ -6,13 +6,13 @@ const io = require('socket.io')(http);
 const path = require('path');
 const port = 80;
 
-
-
 let baseHandler = require('./database.js')
 
 let baseUsing = new baseHandler()
 
-baseUsing.getStartEndPoint(1);
+// let res = baseUsing.getStartEndPoint('20-10-1').then(results=>console.log(results))
+// - получение данных из базы
+let res = baseUsing.getAppsList().then(values => console.log(values[1].value['Статус']))
 
 // открываем доступ к статике, т.е к папке public (css, js, картинки)
 app.use(express.static("../frontend/public/"));
@@ -29,7 +29,7 @@ app.get('/order/20-10-4', (req, res) => {
 
 // сокеты
 io.on('connection', (socket) => {
-    console.log(socket.id + 'user connected');
+    console.log(socket.id + ' user connected');
     socket.on('disconnect', () => {
         console.log(socket.id + ' user disconnected');
       });

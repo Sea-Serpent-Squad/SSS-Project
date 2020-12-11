@@ -97,7 +97,7 @@ module.exports = class database {
                 }
             ))
             })
-        return await Promise.allSettled(values)
+        return Promise.allSettled(values)
     }
 }
 

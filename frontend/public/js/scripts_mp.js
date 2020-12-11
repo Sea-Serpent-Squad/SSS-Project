@@ -9,6 +9,8 @@ let downSight = true; // true - DOWN, false - UP
 const figureDOWN = 'fas fa-sort-amount-down-alt'; // to put figure
 const figureUP = 'fas fa-sort-amount-up-alt';
 
+
+
 // как только страница прогрузится
 document.addEventListener("DOMContentLoaded", function (event) {
     let socket = io();
@@ -16,7 +18,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
         addRow(data.orderID, data.orderName);
     })
 
+    socket.on('setStartRows', (data) => {
+        setStartRows(data);
+    })
 
+    socket.emit('getStartRows');
 
     // привяжем действия при клике на кнопки сортировки
     document.querySelectorAll(".th-mp").forEach((elem) => {
@@ -36,14 +42,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     document.getElementById("search-edit").addEventListener('input', setFilter);
     /* Событие у ввода фильтра в input[text] это такой же фильтр, как и выбор приоритета, поэтому у них один обработчик установки фильтра */
     document.getElementById("filter-priority").addEventListener('change', setFilter);
-
-
-
-
-
-
-
-
 
 });
 
@@ -144,6 +142,35 @@ async function addRow(orderID, orderName) {
     row.className = "priority-low";
     row.addEventListener('click', () => {
         window.open("/order/" + orderID, "_self");
+    });
+    tbody.appendChild(row);
+    // - Сразу проверим показывать ли строку или нет
+    //setFilter(tbody.rows.length-1);
+}
+
+function getStatusName(str)
+{
+    if (str == 'Новый') return 'new-col';
+    if (str == 'Просмотрен') return 'ignored-col';
+    if (str == 'Принят') return 'green-col';
+    return 'red-col';
+}
+
+/* Функция добавления строки таблицы */
+async function setStartRows(data) {
+    console.log(data)
+    let tbody = document.getElementById("app_table").getElementsByTagName("TBODY")[0];
+    let row = document.createElement("TR");
+    row.appendChild(create_td_value(`<span class="status-big ${getStatusName(data['Статус'])}"></span>`));
+    row.appendChild(create_td_value(data['ID']));
+    row.appendChild(create_td_value(data['Описание']));
+    row.appendChild(create_td_value(data['Места']));
+    row.appendChild(create_td_value(data['Время']));
+    row.appendChild(create_td_value(data['Цех']));
+    row.setAttribute("border", "1px solid rgba(0, 0, 0, 0.25)");
+    row.className = data['Приоритет'] === 'Низкий' ? 'priority-low' : data['Приоритет'] === 'Средний' ? 'priority-mid' : 'priority-high';
+    row.addEventListener('click', () => {
+        window.open("/order/" + data['ID'], "_self");
     });
     tbody.appendChild(row);
     // - Сразу проверим показывать ли строку или нет

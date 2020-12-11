@@ -10,10 +10,48 @@ let baseHandler = require('./database.js')
 
 let baseUsing = new baseHandler()
 
+// сокеты
+io.on('connection', (socket) => {
+    console.log(socket.id + ' user connected');
+    socket.on('disconnect', () => {
+        console.log(socket.id + ' user disconnected');
+    });
+    socket.on('getStartRows', ()=>
+    {
+        baseUsing.getAppsList().then(values =>
+        {
+            values.forEach(element => io.emit('setStartRows',
+                {
+                    Статус : element.value['Статус'],
+                    ID: element.value['№ заявки'],
+                    Места: element.value['Место работы'],
+                    Описание: element.value['Описание работ'],
+                    Время: element.value['Время подачи'],
+                    Приоритет: element.value['Приоритет'],
+                    Цех: element.value['Цех']
+                }))})}
+    )
+});
+
+
+/*
 // let res = baseUsing.getStartEndPoint('20-10-1').then(results=>console.log(results))
 // - получение данных из базы
-let res = baseUsing.getAppsList().then(values => console.log(values[1].value['Статус']))
-
+let res = baseUsing.getAppsList().then(values =>
+    {
+        values.forEach(element => io.emit('setStartRows',
+            {
+                Статус : element.value['Статус'],
+                ID: element.value['№ заявки'],
+                Места: element.value['Место работы'],
+                Описание: element.value['Описание работ'],
+                Время: element.value['Время подачи'],
+                Приоритет: element.value['Приоритет'],
+                Цех: element.value['Цех']
+            } ))
+    }
+    //console.log(values[1].value['Статус'])
+)*/
 // открываем доступ к статике, т.е к папке public (css, js, картинки)
 app.use(express.static("../frontend/public/"));
 // главная страница
@@ -27,17 +65,12 @@ app.get('/order/20-10-4', (req, res) => {
 });
 
 
-// сокеты
-io.on('connection', (socket) => {
-    console.log(socket.id + ' user connected');
-    socket.on('disconnect', () => {
-        console.log(socket.id + ' user disconnected');
-      });
-});
-
 http.listen(port, () => {
     console.log(`Server running on port: ${port}`);
 });
+
+
+
 
 // для ввода в консоль сервера
 const readline = require('readline');

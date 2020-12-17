@@ -27,15 +27,6 @@ module.exports = class database {
         this.setConnection()
     }
 
-
-     testQuery() {
-        this.connection.query("INSERT INTO `logistic`.`заявка` (`ID_Заявка`, `ID_Статус`, `ID_Приоритет`, `ID_Сотрудник`, `Дата-время начало`, `Дата-время конец`) VALUES ('55', '1', '2', '3', '2024-05-18 10:00:00', '2024-05-18 11:00:00');", (err, results, fields) => {
-            if (err) console.log(err)
-            else results.forEach(element => {
-                console.log(element['Название'])
-            })
-        })
-    }
     // - Получение название начальной и конечной точки у заявки с id
     getStartEndPoint(id) {
         let point1 = '', point2 = '';
@@ -76,7 +67,7 @@ module.exports = class database {
         })
     }
 
-    async getFilledRow(id)
+    async getFilledRowStartPage(id)
     {
         return new Promise((resolve)=>
         {
@@ -93,11 +84,24 @@ module.exports = class database {
         let values = []
             idList.forEach(element => {
                 values.push(new Promise( (resolve) => {
-                resolve(this.getFilledRow(element))
+                resolve(this.getFilledRowStartPage(element))
                 }
             ))
             })
         return Promise.allSettled(values)
+    }
+
+    // - для получения данных о заявке на вторую страницу
+    async getAppInfo(id)
+    {
+        return new Promise((resolve) =>
+        {
+            this.connection.query(`call getAppInfo('${id}')`, (error, results)=>
+            {
+                if (error) console.error(error);
+                else resolve(results[0]);
+            })
+        })
     }
 }
 

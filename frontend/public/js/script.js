@@ -1,6 +1,8 @@
 // пройдемся во всей виртуальной технике и привяжем реакцию на событие, т.е сделаем, чтобы при нажатии на вирт. технику она выделялась кружком (selected vehicle)
 // и соответственно выделение снималось, когда нажали на другую вирт. технику (или на ту же самую еще один раз)
 
+const socket = io();
+
 let timeline1, timeline2;
 
 function prepareCollapse() {
@@ -105,14 +107,32 @@ var messages = [
     "Сохранено!",
 ].reverse();
 
+
+async function setData(value)
+{
+    document.getElementById('request-id').innerText = value['ID']
+    document.getElementById('request-date').innerText = value['ВремяДата']
+    document.getElementById('request-department').innerText = value['Цех']
+    document.getElementById('request-place').innerText = value['Места']
+    document.getElementById('request-person').innerText = value['Ответственный']
+    document.getElementById('request-desc').innerText = value['Описание']
+}
+
 // как только документ прогрузится вызвать эти функции
-$(document).ready(() => {
+document.addEventListener("DOMContentLoaded", function (event) {
+
+    socket.on("connect", () => {
+        console.log(socket.id);
+    });
+    socket.on('setAppData', (value) => { setData(value) })
+
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());
     prepareCollapse();
     addNewVehicle();
     vehicleChoice();
     // - Добавим таймлайн
+
 
     timeline = new Timeline('timeline1', '2020-10-31', [{
             id: 1,

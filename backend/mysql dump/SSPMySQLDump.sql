@@ -284,6 +284,40 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'logistic'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `getAppInfo` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`user`@`localhost` PROCEDURE `getAppInfo`(IN `id` varchar(12))
+begin
+	declare places text; 
+
+	declare uniquePlaceFound int;
+    set uniquePlaceFound = (select count(distinct(`ID_Объект`)) from `точкамаршрута` where `ID_Заявка` = `id`); 
+    if (uniquePlaceFound = 1) then set places = (select (select `Название` from `объект` where `ID_Объект` = A.`ID_Объект`) from `точкамаршрута` A where `ID_Заявка` = `id` order by `ID_Заявка` limit 1);
+    else set places = (select group_concat(`Название` SEPARATOR ' - ') from `объект` where `ID_Объект` IN ( select `ID_Объект` from `точкамаршрута` A where `ID_Заявка` = `id` ));
+    end if; 
+	
+    
+	select  `id` as 'ID', 
+    B.`Название` as `Статус`,
+    (select `название` from `объект` where `ID_Объект` = (A.`id_объект`)) as 'Цех',
+    CONCAT(time(A.`Дата-время начало`), ' - ',time(A.`Дата-время конец`), ' ', date(A.`Дата-время конец`)) as 'Время и дата выполнения',
+    places as 'Место работы', (select `ФИО` from `сотрудник` where `id_сотрудник` = A.`ID_Сотрудник`) as 'Ответственный',
+    (SELECT E.`Название` FROM `точкамаршрута` E WHERE E.`ID_Заявка` = `ID` AND `Очередность` = 1) as 'Описание работы'
+    from `заявка` A, `статус` B where A.`ID_Заявка` = `id` and B.`ID_Статус` = A.`ID_Статус`;
+end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `getFilledRow` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -338,4 +372,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-12  2:51:14
+-- Dump completed on 2020-12-18  0:34:23

@@ -16,6 +16,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(socket.id + ' user disconnected');
     });
+
     socket.on('getStartRows', ()=>
     {
         baseUsing.getAppsList().then(values =>
@@ -31,8 +32,22 @@ io.on('connection', (socket) => {
                     Цех: element.value['Цех']
                 }))})}
     )
-});
 
+    socket.on('getAppInfo', (id)=>
+    {
+        baseUsing.getAppInfo(id).then(values =>
+        {
+            io.emit('setAppData',
+        {
+            ID: values[0]['ID'],
+            Места: values[0]['Место работы'],
+            Цех: values[0]['Цех'],
+            ВремяДата: values[0]['Время и дата выполнения'],
+            Ответственный: values[0]['Ответственный'],
+            Описание: values[0]['Описание работы']
+        })  })
+    })
+});
 
 /*
 // let res = baseUsing.getStartEndPoint('20-10-1').then(results=>console.log(results))

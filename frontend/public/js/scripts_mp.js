@@ -1,6 +1,3 @@
-
-
-
 // глобальные переменные, потом добавим в класс
 let figureWas = 'sortFigSt'; // Figure of down/up was
 let downSight = true; // true - DOWN, false - UP
@@ -9,19 +6,18 @@ let downSight = true; // true - DOWN, false - UP
 const figureDOWN = 'fas fa-sort-amount-down-alt'; // to put figure
 const figureUP = 'fas fa-sort-amount-up-alt';
 
-
+let socket = io();
 
 // как только страница прогрузится
 document.addEventListener("DOMContentLoaded", function (event) {
-    let socket = io();
+
     socket.on('newRow', (data) => {
         addRow(data.orderID, data.orderName);
     })
-
     socket.on('setStartRows', (data) => {
         setStartRows(data);
     })
-
+    socket.on('setAppData', (data)=> console.log(data))
     socket.emit('getStartRows');
 
     // привяжем действия при клике на кнопки сортировки
@@ -150,15 +146,14 @@ async function addRow(orderID, orderName) {
 
 function getStatusName(str)
 {
-    if (str == 'Новый') return 'new-col';
-    if (str == 'Просмотрен') return 'ignored-col';
-    if (str == 'Принят') return 'green-col';
+    if (str == 'Новый')         return 'new-col';
+    if (str == 'Просмотрен')    return 'ignored-col';
+    if (str == 'Принят')        return 'green-col';
     return 'red-col';
 }
 
 /* Функция добавления строки таблицы */
 async function setStartRows(data) {
-    console.log(data)
     let tbody = document.getElementById("app_table").getElementsByTagName("TBODY")[0];
     let row = document.createElement("TR");
     row.appendChild(create_td_value(`<span class="status-big ${getStatusName(data['Статус'])}"></span>`));
@@ -170,6 +165,7 @@ async function setStartRows(data) {
     row.setAttribute("border", "1px solid rgba(0, 0, 0, 0.25)");
     row.className = data['Приоритет'] === 'Низкий' ? 'priority-low' : data['Приоритет'] === 'Средний' ? 'priority-mid' : 'priority-high';
     row.addEventListener('click', () => {
+        socket.emit('getAppInfo', data['ID']);
         window.open("/order/" + data['ID'], "_self");
     });
     tbody.appendChild(row);

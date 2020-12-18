@@ -118,13 +118,20 @@ async function setData(value)
     document.getElementById('request-desc').innerText = value['Описание']
 }
 
+window.onbeforeunload = function(){
+    socket.emit('leavePage', window.location.href.split('/')[4])
+};
+
 // как только документ прогрузится вызвать эти функции
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    socket.on("connect", () => {
-        console.log(socket.id);
-    });
-    socket.on('setAppData', (value) => { setData(value) })
+    //socket.emit('page2rdy', (window.location.href.split('/')[4]));
+     socket.on('setAppData', (ID, data) =>
+     {
+            setData(ID)
+     });
+
+    socket.emit('getAppInfo', window.location.href.split('/')[4]);
 
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());

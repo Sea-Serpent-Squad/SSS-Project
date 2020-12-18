@@ -8,6 +8,7 @@ const figureUP = 'fas fa-sort-amount-up-alt';
 
 let socket = io();
 
+
 // как только страница прогрузится
 document.addEventListener("DOMContentLoaded", function (event) {
 
@@ -39,7 +40,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
     /* Событие у ввода фильтра в input[text] это такой же фильтр, как и выбор приоритета, поэтому у них один обработчик установки фильтра */
     document.getElementById("filter-priority").addEventListener('change', setFilter);
 
+    socket.on('youCan', (ID)=>
+    {
+        window.open("/order/" + ID['ID'], "_self");
+    })
+
+    socket.on('youCant', (data)=>
+    {
+        alert(`Заявка ${data} обрабатывается кем-то другим!`)
+    })
 });
+
+
 
 //  - Проверка нахождения в строке
 function isTdContainFiler(td, enter) {
@@ -136,13 +148,15 @@ async function addRow(orderID, orderName) {
     row.appendChild(create_td_value('ДСУ'));
     row.setAttribute("border", "1px solid rgba(0, 0, 0, 0.25)");
     row.className = "priority-low";
-    row.addEventListener('click', () => {
-        window.open("/order/" + orderID, "_self");
-    });
+    /// !!!!!!!!!!!! row.addEventListener('openNewPage', orderID);
     tbody.appendChild(row);
     // - Сразу проверим показывать ли строку или нет
     //setFilter(tbody.rows.length-1);
 }
+/*
+document.addEventListener('openNewPage', function(orderID){
+    socket.emit('passToOrder', orderID);
+});*/
 
 function getStatusName(str)
 {
@@ -151,6 +165,7 @@ function getStatusName(str)
     if (str == 'Принят')        return 'green-col';
     return 'red-col';
 }
+
 
 /* Функция добавления строки таблицы */
 async function setStartRows(data) {
@@ -165,9 +180,8 @@ async function setStartRows(data) {
     row.setAttribute("border", "1px solid rgba(0, 0, 0, 0.25)");
     row.className = data['Приоритет'] === 'Низкий' ? 'priority-low' : data['Приоритет'] === 'Средний' ? 'priority-mid' : 'priority-high';
     row.addEventListener('click', () => {
-        socket.emit('getAppInfo', data['ID']);
-        window.open("/order/" + data['ID'], "_self");
-    });
+        socket.emit('passToOrder', data['ID']);
+     });
     tbody.appendChild(row);
     // - Сразу проверим показывать ли строку или нет
     //setFilter(tbody.rows.length-1);

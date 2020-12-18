@@ -6,6 +6,10 @@ const io = require('socket.io')(http);
 const path = require('path');
 const port = 80;
 
+const mutex = require('./mutex.js')
+
+let mutexHandle = new mutex()
+
 let baseHandler = require('./database.js')
 
 let baseUsing = new baseHandler()
@@ -33,6 +37,54 @@ io.on('connection', (socket) => {
                 }))})}
     )
 
+    socket.on('passToOrder', (ID) =>
+    {
+        orderValue(ID);
+        if (!mutexHandle.isBusy(ID)) {
+            baseUsing.getAppInfo(ID).then(values => {
+                socket.emit('youCan', ( ID,  {
+                        ID: values[0]['ID'],
+                        Места: values[0]['Место работы'],
+                        Цех: values[0]['Цех'],
+                        ВремяДата: values[0]['Время и дата выполнения'],
+                        Ответственный: values[0]['Ответственный'],
+                        Описание: values[0]['Описание работы']
+                } ));
+            })
+            mutexHandle.addOrder(ID)
+        } else
+        {
+            socket.emit('youCant', ID)
+        }
+    })
+
+    /*socket.on('passToOrder2', (ID) =>
+    {
+        orderValue(ID);
+        if (!mutexHandle.isBusy(ID)) {
+            baseUsing.getAppInfo(ID).then(values => {
+                socket.emit('youCan2', ( ID,  {
+                    ID: values[0]['ID'],
+                    Места: values[0]['Место работы'],
+                    Цех: values[0]['Цех'],
+                    ВремяДата: values[0]['Время и дата выполнения'],
+                    Ответственный: values[0]['Ответственный'],
+                    Описание: values[0]['Описание работы']
+                } ));
+            })
+            mutexHandle.addOrder(ID)
+        } else
+        {
+            socket.emit('youCant2', ID)
+        }
+    })*/
+
+
+    socket.on('leavePage', (data)=>
+    {
+        mutexHandle.deleteOrder(data)
+    })
+
     socket.on('getAppInfo', (id)=>
     {
         baseUsing.getAppInfo(id).then(values =>
@@ -45,9 +97,27 @@ io.on('connection', (socket) => {
             ВремяДата: values[0]['Время и дата выполнения'],
             Ответственный: values[0]['Ответственный'],
             Описание: values[0]['Описание работы']
-        })  })
+          })
     })
+
+})
+
 });
+
+function orderValue(id)
+{
+        /*return baseUsing.getAppInfo(id).then(values =>
+        {
+            return new Object({
+            ID: values[0]['ID'],
+                Места: values[0]['Место работы'],
+                Цех: values[0]['Цех'],
+                ВремяДата: values[0]['Время и дата выполнения'],
+                Ответственный: values[0]['Ответственный'],
+                Описание: values[0]['Описание работы']
+            })
+        })*/
+}
 
 /*
 // let res = baseUsing.getStartEndPoint('20-10-1').then(results=>console.log(results))
@@ -79,13 +149,9 @@ app.get('/order/20-10-4', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/pages', 'second_page.html'));
 });
 
-
 http.listen(port, () => {
     console.log(`Server running on port: ${port}`);
 });
-
-
-
 
 // для ввода в консоль сервера
 const readline = require('readline');
@@ -104,6 +170,7 @@ rl.on('line', (input_str) => {
         let s = arg.split(',');
         io.emit(command, {orderID: s[0], orderName: s[1]});
     }
+    if (command = "reset") mutexHandle.testReset()
     else {
         console.log("Wrong input");
     }

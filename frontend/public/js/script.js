@@ -2,6 +2,19 @@
 // и соответственно выделение снималось, когда нажали на другую вирт. технику (или на ту же самую еще один раз)
 
 const socket = io();
+const orderID = window.location.href.split('/')[4];
+socket.on('setOrderData', (data) => {
+    setData(data);
+});
+
+socket.emit('takeOrderMutex', orderID);
+
+socket.on('disconnect', () => {
+    setTimeout(() => {
+        alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
+        document.location.reload();
+    }, 2000);
+});
 
 let timeline1, timeline2;
 
@@ -108,30 +121,18 @@ var messages = [
 ].reverse();
 
 
-async function setData(value)
-{
-    document.getElementById('request-id').innerText = value['ID']
-    document.getElementById('request-date').innerText = value['ВремяДата']
-    document.getElementById('request-department').innerText = value['Цех']
-    document.getElementById('request-place').innerText = value['Места']
-    document.getElementById('request-person').innerText = value['Ответственный']
-    document.getElementById('request-desc').innerText = value['Описание']
+async function setData(value) {
+    document.getElementById('request-id').innerText = value['ID'];
+    document.getElementById('request-date').innerText = value['ВремяДата'];
+    document.getElementById('request-department').innerText = value['Цех'];
+    document.getElementById('request-place').innerText = value['Места'];
+    document.getElementById('request-person').innerText = value['Ответственный'];
+    document.getElementById('request-desc').innerText = value['Описание'];
 }
-
-window.onbeforeunload = function(){
-    socket.emit('leavePage', window.location.href.split('/')[4])
-};
 
 // как только документ прогрузится вызвать эти функции
 document.addEventListener("DOMContentLoaded", function (event) {
-
-    //socket.emit('page2rdy', (window.location.href.split('/')[4]));
-     socket.on('setAppData', (ID, data) =>
-     {
-            setData(ID)
-     });
-
-    socket.emit('getAppInfo', window.location.href.split('/')[4]);
+    socket.emit('getOrderInfo', orderID);
 
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());
@@ -142,28 +143,28 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
 
     timeline = new Timeline('timeline1', '2020-10-31', [{
-            id: 1,
-            group: 1,
-            className: 'bold rounded',
-            start: '11:00',
-            end: '11:30'
-        },
-        {
-            id: 2,
-            group: 2,
-            className: 'normal rounded',
-            start: '11:30',
-            end: '13:00'
-        },
-        {
-            id: 3,
-            group: 3,
-            className: 'bold rounded',
-            start: '13:00',
-            end: '13:20'
-        }
-    ],
-    groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
+                id: 1,
+                group: 1,
+                className: 'bold rounded',
+                start: '11:00',
+                end: '11:30'
+            },
+            {
+                id: 2,
+                group: 2,
+                className: 'normal rounded',
+                start: '11:30',
+                end: '13:00'
+            },
+            {
+                id: 3,
+                group: 3,
+                className: 'bold rounded',
+                start: '13:00',
+                end: '13:20'
+            }
+        ],
+        groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
 
 
     timeline2 = new Timeline('timeline2', '2020-10-31', [{
@@ -172,6 +173,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         className: 'bold rounded',
         start: '11:00',
         end: '11:30'
-    }], groupNames = ['Промывка 30 м<sup>3</sup>'],'bottom');
+    }], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');
 
 });

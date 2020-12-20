@@ -8,27 +8,49 @@ const figureUP = 'fas fa-sort-amount-up-alt';
 
 let socket = io();
 
-
 // как только страница прогрузится
 document.addEventListener("DOMContentLoaded", function (event) {
+    // выводим ошибку, если страница была открыта с параметром ?error
+    let error = window.location.href.split('/')[3];
+    if (error != "") {
+        history.replaceState({
+            param: 'Value'
+        }, '', '/');
+        let ID = error.split("?")[2];
+        alert(`Заявка ${ID} не существует или обрабатывается кем-то другим!`);
+    }
 
-    socket.on('newRow', (data) => {
-        addRow(data.orderID, data.orderName);
-    })
-    socket.on('setStartRows', (data) => {
-        setStartRows(data);
-    })
-    socket.on('setAppData', (data)=> console.log(data))
+    // отправляем запрос на сервер, что хотим загрузить список заявок
     socket.emit('getStartRows');
-
+    // добавляем строку с заявкой, полученную с сервера
+    socket.on('addRow', (data) => {
+        addRow(data);
+    });
+    // если переход разрешен (страница не занята), то переходим, иначе выводим ошибку
+    socket.on('passSuccess', ({
+        ID,
+        successBool
+    }) => {
+        if (successBool) {
+            window.open(`/order/${ID}`, "_self");
+        } else {
+            alert(`Заявка ${ID} обрабатывается кем-то другим!`);
+        }
+    });
+    // включим сортировку для таблицы (плагин для jQuery - tablesorter)
+    $("#app_table").tablesorter({
+        sortList: [
+            [1, 0]
+        ]
+    });
     // привяжем действия при клике на кнопки сортировки
     document.querySelectorAll(".th-mp").forEach((elem) => {
+        let icon = elem.querySelector('span');
+        icon.className = figureUP;
         let id = elem.querySelector('span').getAttribute('id');
         elem.addEventListener('click', () => headerValue_click(id));
     });
-    // привяжем добавление строки к кнопке
-    document.getElementById("add_row_btn").addEventListener('click', () => addRow());
-    // установим сортировку по № при стартовой загрузке страницы
+    // отобразим иконку сортировки по № при стартовой загрузке страницы
     headerValue_click('sortFigN');
     // временная функция для привязки перехода на новую страницу для строк таблицы
     // это необходимо делать при вставке строки в таблицу
@@ -39,21 +61,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     document.getElementById("search-edit").addEventListener('input', setFilter);
     /* Событие у ввода фильтра в input[text] это такой же фильтр, как и выбор приоритета, поэтому у них один обработчик установки фильтра */
     document.getElementById("filter-priority").addEventListener('change', setFilter);
-
-    socket.on('youCan', (ID)=>
-    {
-        window.open("/order/" + ID['ID'], "_self");
-    })
-
-    socket.on('youCant', (data)=>
-    {
-        alert(`Заявка ${data} обрабатывается кем-то другим!`)
-    })
 });
 
-
-
-//  - Проверка нахождения в строке
+// - Проверка нахождения в строке
 function isTdContainFiler(td, enter) {
     return td.innerHTML.toUpperCase().indexOf(enter) > -1;
 }
@@ -92,8 +102,7 @@ function tempFuncToOpenOrder() {
     let table = document.getElementById('app_table');
     let rows = table.getElementsByTagName('tr');
     let N = rows.length;
-    for (let i = 1; i < N; ++i) 
-    {
+    for (let i = 1; i < N; ++i) {
         rows[i].addEventListener('click', () => {
             let orderID = rows[i].children[1].innerText;
             window.open("/order/" + orderID, "_self");
@@ -136,42 +145,20 @@ function create_td_value(text) {
     return td;
 }
 
-/* Функция добавления строки таблицы */
-async function addRow(orderID, orderName) {
-    let tbody = document.getElementById("app_table").getElementsByTagName("TBODY")[0];
-    let row = document.createElement("TR");
-    row.appendChild(create_td_value('<span class="status-big new-col"></span>'));
-    row.appendChild(create_td_value(orderID));
-    row.appendChild(create_td_value(orderName));
-    row.appendChild(create_td_value('ПСП, УКПГ'));
-    row.appendChild(create_td_value('8:00 - 20:00'));
-    row.appendChild(create_td_value('ДСУ'));
-    row.setAttribute("border", "1px solid rgba(0, 0, 0, 0.25)");
-    row.className = "priority-low";
-    /// !!!!!!!!!!!! row.addEventListener('openNewPage', orderID);
-    tbody.appendChild(row);
-    // - Сразу проверим показывать ли строку или нет
-    //setFilter(tbody.rows.length-1);
-}
-/*
-document.addEventListener('openNewPage', function(orderID){
-    socket.emit('passToOrder', orderID);
-});*/
-
-function getStatusName(str)
-{
-    if (str == 'Новый')         return 'new-col';
-    if (str == 'Просмотрен')    return 'ignored-col';
-    if (str == 'Принят')        return 'green-col';
+function getStatusName(str) {
+    if (str == 'Новый') return 'new-col';
+    if (str == 'Просмотрен') return 'ignored-col';
+    if (str == 'Принят') return 'green-col';
     return 'red-col';
 }
 
 
 /* Функция добавления строки таблицы */
-async function setStartRows(data) {
+async function addRow(data) {
     let tbody = document.getElementById("app_table").getElementsByTagName("TBODY")[0];
     let row = document.createElement("TR");
-    row.appendChild(create_td_value(`<span class="status-big ${getStatusName(data['Статус'])}"></span>`));
+    let status = getStatusName(data['Статус']);
+    row.appendChild(create_td_value(`<span class="status-big ${status}">${status}</span>`));
     row.appendChild(create_td_value(data['ID']));
     row.appendChild(create_td_value(data['Описание']));
     row.appendChild(create_td_value(data['Места']));
@@ -181,8 +168,9 @@ async function setStartRows(data) {
     row.className = data['Приоритет'] === 'Низкий' ? 'priority-low' : data['Приоритет'] === 'Средний' ? 'priority-mid' : 'priority-high';
     row.addEventListener('click', () => {
         socket.emit('passToOrder', data['ID']);
-     });
+    });
     tbody.appendChild(row);
+    $("table").trigger("update", true);
     // - Сразу проверим показывать ли строку или нет
     //setFilter(tbody.rows.length-1);
 }
@@ -191,23 +179,12 @@ async function setStartRows(data) {
 function getElementByText(text) {
     return document.getElementById(text);
 }
-
 // - Вывести иконку сортировки по возрастанию или по убыванию
 function headerValue_click(text) {
     let element_before = getElementByText(figureWas);
     element_before.style.visibility = 'hidden';
-    element_before.className = figureDOWN;
     let element = getElementByText(text);
-    if (figureWas == text) {
-        if (downSight) {
-            element.className = figureUP;
-        } else {
-            element.className = figureDOWN;
-        }
-        downSight = element.className == figureUP ? false : true;
-    } else {
-        downSight = true;
-    }
+    element.className = (element.className == figureDOWN) ? figureUP : figureDOWN;
     element.style.visibility = 'visible';
     figureWas = text;
 }

@@ -1,17 +1,7 @@
 let mysql = require('mysql');
+const util = require('util');
 
 module.exports = class database {
-
-    setConnection() {
-        this.connection.connect(err => {
-            if (err) {
-                console.error('connection error : ' + err.stack);
-                return false;
-            }
-            console.log('successful connection for id' + this.connection.threadId);
-            return true;
-        });
-    }
 
     constructor() {
 
@@ -22,86 +12,74 @@ module.exports = class database {
             database: 'logistic',
             multipleStatements: true
         }
-        this.connection = mysql.createConnection(this.config)
+        this.connection = mysql.createConnection(this.config);
+        // обертка для connection.query, чтобы можно было использовать query в async-await связках
+        this.query = util.promisify(this.connection.query).bind(this.connection);
+        this.setConnection();
+    };
 
-        this.setConnection()
+    setConnection() {
+        this.connection.connect(err => {
+            if (err) {
+                console.error(`DB: connection error: ${err.stack}`);
+            } else {
+                console.log(`DB: successful connection for id ${this.connection.threadId}`);
+            }
+        });
+    };
+
+    // - получение списка ID заявок
+    async getOrderIdList() {
+        try {
+            const results = await this.query(`SELECT ID_Заявка FROM заявка order by ID_Заявка`);
+            let list = [];
+            results.forEach(element => list.push(element['ID_Заявка']));
+            return list;
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
+    };
+
+    async getFilledRow(id) {
+        const results = await this.query(`call getFilledRow('${id}')`);
+        if (!results[0][0]) throw new Error("Order not found");
+        return results[0][0];
     }
-
-    // - Получение название начальной и конечной точки у заявки с id
-    getStartEndPoint(id) {
-        let point1 = '', point2 = '';
-        return new Promise((resolve) =>
-        {
-            this.connection.query(`CALL getStartEndPointsOfApp('${id}', @output1, @output2); SELECT @output1, @output2`, [point1, point2], (error, results) => {
-                if (error) {
-                    return console.error(error.message);
-                }
-                try {
-                    point1 = JSON.stringify(results[1][0]["@output1"]).replaceAll('\"', '')
-                    point2 = JSON.stringify(results[1][0]["@output2"]).replaceAll('\"', '');
-                    resolve(point1 == point2 ? point1 : `${point1} - ${point2}`);
-                } catch (e) {
-                    console.log(e)
-                }
-            })
-        })
+    async isOrderExist(ID) {
+        try {
+            const results = await this.query(`SELECT COUNT(*) FROM заявка WHERE ID_Заявка = "${ID}"`);
+            const value = results[0]['COUNT(*)'];
+            if (value == 1) return true;
+            else return false;
+        } catch (error) {
+            console.error(`BD: ${error}`);
+            return false;
+        }
     }
+    // - получение списка заявок с соответстующими данными заявки
+    async getOrderList() {
+        let filledRowList = [];
+        try {
+            // получаем список ID заявок
+            let idList = await this.getOrderIdList();
+            filledRowList = [];
+            for (const ID of idList) {
+                let row = await this.getFilledRow(ID);
+                filledRowList.push(row);
+            };
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
+        return filledRowList;
+    };
 
-    // - получение списка заявок, для формирования списка заявок на главной странице
-    getAppIds()
-    {
-        return new Promise((resolve) =>
-        {
-            this.connection.query(`SELECT ID_Заявка FROM заявка order by ID_Заявка`, (error, results) => {
-                if (error) {
-                    return console.error(error.message);
-                }
-                try {
-                    let list = []
-                    results.forEach(element => list.push(element['ID_Заявка']))
-                    resolve(list);
-                } catch (e) {
-                    console.log(e)
-                }
-            })
-        })
+    // - для получения данных о заявке на второй странице
+    async getOrderInfo(ID) {
+        try {
+            const results = await this.query(`call getOrderInfo('${ID}')`);
+            return results[0][0];
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
     }
-
-    async getFilledRowStartPage(id)
-    {
-        return new Promise((resolve)=>
-        {
-            this.connection.query(`call getFilledRow('${id}')`, (error, results)=>
-            {
-                 this.getStartEndPoint(id).then(val => results[0][0]['Место работы'] = val).then(() => resolve(results[0][0]))
-            })
-        })
-    }
-
-    // - получение списка заявок, с определениями
-    async getAppsList() {
-        let idList = await this.getAppIds()
-        let values = []
-            idList.forEach(element => {
-                values.push(new Promise( (resolve) => {
-                resolve(this.getFilledRowStartPage(element))
-                }
-            ))
-            })
-        return Promise.allSettled(values)
-    }
-
-    // - для получения данных о заявке на вторую страницу
-    async getAppInfo(id)
-    {
-        return new Promise((resolve) =>
-        {
-            this.connection.query(`call getAppInfo('${id}')`, (error, results)=>
-            {
-                if (error) console.error(error);
-                else resolve(results[0]);
-            })
-        })
-    }
-}
-
+};

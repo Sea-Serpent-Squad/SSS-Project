@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `logistic` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `logistic`;
 -- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: logistic
+-- Host: localhost    Database: logistic
 -- ------------------------------------------------------
 -- Server version	8.0.22
 
@@ -331,7 +333,19 @@ DELIMITER ;;
 CREATE DEFINER=`user`@`localhost` PROCEDURE `getFilledRow`(IN `ID` varchar(12))
     COMMENT 'Получение заполненной информации о заявке'
 BEGIN   
-	 SELECT B.`Название` as `Статус`, `ID` as `№ заявки`, (SELECT E.`Название` FROM `точкамаршрута` E WHERE E.`ID_Заявка` = `ID` AND `Очередность` = 1) as `Описание работ`, CONCAT(time(A.`Дата-время начало`), ' - ',time(A.`Дата-время конец`)) as `Время подачи`, D.`Название` as `Приоритет`,  (SELECT `Название` from `объект` where `id_объект` = A.`id_объект`) as 'Цех'
+	 DECLARE lastPos int;
+     DECLARE ОбъектНачало text;
+     DECLARE ОбъектКонец text;
+     DECLARE МестоРаботы text;
+	 SET lastPos = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = `ID` ORDER BY `Очередность` DESC LIMIT 1);
+     SET ОбъектНачало = (SELECT `Название` FROM `объект` WHERE `ID_Объект` = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = `ID` AND `Очередность` = 1));
+     SET ОбъектКонец =  (SELECT `Название` FROM `объект` WHERE `ID_Объект` = lastPos);
+     
+     IF (ОбъектНачало = ОбъектКонец) THEN SET МестоРаботы = ОбъектНачало; 
+     ELSE SET МестоРаботы = CONCAT(ОбъектНачало, ' - ', ОбъектКонец);
+     END IF;
+     
+     SELECT B.`Название` as `Статус`, `ID` as `№ заявки`, (SELECT E.`Название` FROM `точкамаршрута` E WHERE E.`ID_Заявка` = `ID` AND `Очередность` = 1) as `Описание работ`, CONCAT(time(A.`Дата-время начало`), ' - ',time(A.`Дата-время конец`)) as `Время подачи`, D.`Название` as `Приоритет`,  (SELECT `Название` from `объект` where `id_объект` = A.`id_объект`) as `Цех`, МестоРаботы as `Место работы`
      FROM `статус` B, `заявка` A, `приоритет` D WHERE A.`ID_заявка` = `ID` AND B.`ID_Статус` = A.`ID_Статус` AND D.`ID_Приоритет` = A.`ID_Приоритет`;
 END ;;
 DELIMITER ;
@@ -339,7 +353,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `getStartEndPointsOfApp` */;
+/*!50003 DROP PROCEDURE IF EXISTS `getOrderInfo` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -349,14 +363,25 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`user`@`localhost` PROCEDURE `getStartEndPointsOfApp`(IN ID_App varchar(12), OUT `ОбъектНачало` text, OUT `ОбъектКонец` text)
-    COMMENT 'Получение начальной и конечной точки для главной страницы отображения заявок'
-BEGIN
-	DECLARE lastPos int;
-    SET lastPos = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = ID_App ORDER BY `Очередность` DESC LIMIT 1);
-    SET ОбъектНачало = (SELECT `Название` FROM `объект` WHERE `ID_Объект` = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = ID_App AND `Очередность` = 1));
-    SET ОбъектКонец =  (SELECT `Название` FROM `объект` WHERE `ID_Объект` = lastPos);
-END ;;
+CREATE DEFINER=`user`@`localhost` PROCEDURE `getOrderInfo`(IN `id` varchar(12))
+begin
+	declare places text; 
+
+	declare uniquePlaceFound int;
+    set uniquePlaceFound = (select count(distinct(`ID_Объект`)) from `точкамаршрута` where `ID_Заявка` = `id`); 
+    if (uniquePlaceFound = 1) then set places = (select (select `Название` from `объект` where `ID_Объект` = A.`ID_Объект`) from `точкамаршрута` A where `ID_Заявка` = `id` order by `ID_Заявка` limit 1);
+    else set places = (select group_concat(`Название` SEPARATOR ' - ') from `объект` where `ID_Объект` IN ( select `ID_Объект` from `точкамаршрута` A where `ID_Заявка` = `id` ));
+    end if; 
+	
+    
+	select  `id` as 'ID', 
+    B.`Название` as `Статус`,
+    (select `название` from `объект` where `ID_Объект` = (A.`id_объект`)) as 'Цех',
+    CONCAT(time(A.`Дата-время начало`), ' - ',time(A.`Дата-время конец`), ' ', date(A.`Дата-время конец`)) as 'Время и дата выполнения',
+    places as 'Место работы', (select `ФИО` from `сотрудник` where `id_сотрудник` = A.`ID_Сотрудник`) as 'Ответственный',
+    (SELECT E.`Название` FROM `точкамаршрута` E WHERE E.`ID_Заявка` = `ID` AND `Очередность` = 1) as 'Описание работы'
+    from `заявка` A, `статус` B where A.`ID_Заявка` = `id` and B.`ID_Статус` = A.`ID_Статус`;
+end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -372,4 +397,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-18  0:34:23
+-- Dump completed on 2020-12-20  4:51:12

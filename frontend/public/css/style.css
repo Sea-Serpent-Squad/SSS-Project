@@ -55,8 +55,7 @@ a.virt-vehicle[aria-expanded="true"] {
     font-weight: bold;
 }
 
-.disabled
-{
+.disabled {
     display: none;
 }
 
@@ -66,6 +65,9 @@ a.virt-vehicle[aria-expanded="true"] {
     width: 16px;
     border-radius: 50%;
     display: inline-block;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .status-big {
@@ -73,6 +75,9 @@ a.virt-vehicle[aria-expanded="true"] {
     width: 25px;
     border-radius: 50%;
     display: inline-block;
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 /* Для виртуальной техники (которая как кнопка) */
@@ -220,12 +225,12 @@ td:last-of-type {
 }
 
 .hovertable tr:hover {
-    transform: scale(1.006,1.006);
+    transform: scale(1.006, 1.006);
 
 }
 
 .hovertable tr.nohover:hover {
-    transform: scale(1,1);
+    transform: scale(1, 1);
 }
 
 .tbody-mp {
@@ -300,46 +305,38 @@ select {
 }
 
 /* + Timeline style! */
-.vis-item
-{
+.vis-item {
     border-color: transparent;
     text-align: center;
     padding: 0px;
 }
 
-.vis-item.busy
-{
+.vis-item.busy {
     background-color: rgba(243, 156, 157, 1) !important;
 }
 
-.vis-item.transparent
-{
+.vis-item.transparent {
     background-color: transparent !important;
     border-color: transparent !important;
 }
 
-.vis-item.work
-{
+.vis-item.work {
     background-color: rgba(150, 236, 121, 1) !important;
 }
 
-.vis-item.drive
-{
+.vis-item.drive {
     background-color: rgba(164, 238, 234, 1) !important;
 }
 
-.vis-item.bold
-{
+.vis-item.bold {
     background-color: rgba(249, 201, 79, 1) !important;
 }
 
-.vis-item.normal
-{
+.vis-item.normal {
     background-color: rgba(251, 229, 173, 1) !important;
 }
 
-.vis-item.vis-selected
-{
+.vis-item.vis-selected {
     background-color: rgba(255, 255, 255, 1) !important;
 }
 
@@ -350,11 +347,13 @@ select {
     border-radius: 5px;
 }
 
-br
-{
-    display: block; /* makes it have a width */
-    content: ""; /* clears default height */
-    margin-top: 7px; /* change this to whatever height you want it */
+br {
+    display: block;
+    /* makes it have a width */
+    content: "";
+    /* clears default height */
+    margin-top: 7px;
+    /* change this to whatever height you want it */
 }
 
 .vis-item,

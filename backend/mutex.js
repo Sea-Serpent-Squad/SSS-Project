@@ -1,25 +1,38 @@
-module.exports = class mutex
-{
+module.exports = class mutex {
     constructor() {
-        this.orders = new Set()
+        // ключ ID заявки - значение ID сокета
+        this.orderSocket = new Map();
+        // ключ ID сокета - значение ID заявки
+        this.socketOrder = new Map();
     }
 
-    addOrder(id){
-        this.orders.add(id)
+    addOrder(orderID, socketID) {
+        this.orderSocket.set(orderID, socketID);
+        this.socketOrder.set(socketID, orderID);
     }
 
-    deleteOrder(id)
-    {
-        this.orders.delete(id)
+    deleteOrderByOrderID(orderID) {
+        let socketID = this.orderSocket.get(orderID);
+        this.orderSocket.delete(orderID, socketID);
+        this.socketOrder.delete(socketID, orderID);
     }
 
-    isBusy(id)
-    {
-        return this.orders.has(id);
+    deleteOrderBySocketID(socketID) {
+        let orderID = this.socketOrder.get(socketID);
+        this.orderSocket.delete(orderID, socketID);
+        this.socketOrder.delete(socketID, orderID);
     }
 
-    testReset()
-    {
-        this.orders.clear()
+    isBusyByOrderID(orderID) {
+        return this.orderSocket.has(orderID);
+    }
+
+    isBusyBySocketID(socketID) {
+        return this.socketOrder.has(socketID);
+    }
+
+    testReset() {
+        this.orderSocket.clear();
+        this.socketOrder.clear();
     }
 }

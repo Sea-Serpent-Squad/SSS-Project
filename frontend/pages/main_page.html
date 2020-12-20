@@ -8,6 +8,8 @@
     <link href="css/all.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/jquery.tablesorter.min.js"></script>
     <script src="js/scripts_mp.js"></script>
 
     <title>Начальная страница - список заявок</title>
@@ -22,7 +24,7 @@
     <form>
         <div class="inner-addon left-addon">
             <i class="fas fa-search"></i>
-            <input type="text" id="search-edit" class="form-control fnt" placeholder="Поиск заявки (прим., 18-06-1)" >
+            <input type="text" id="search-edit" class="form-control fnt" placeholder="Поиск заявки (прим., 18-06-1)">
         </div>
 
     </form>
@@ -43,15 +45,11 @@
             <!-- отступ -->
             <p style="width: 37.8%"></p>
             <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center ju" style="margin: 0" for="inlineFormCustomSelect">Дата начала:
-            <input type="date" id="date_start" name="trip-start" class="fnt mr-sm-2 custom-select date-picker"
-                   value="2018-07-22"
-                   min="2018-01-01" max="2021-12-31"/>
+                <input type="date" id="date_start" name="trip-start" class="fnt mr-sm-2 custom-select date-picker" value="2018-07-22" min="2018-01-01" max="2021-12-31" />
             </label>
 
-            <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center" style="margin: 0;" for="inlineFormCustomSelect" >Дата окончания:
-                <input type="date" id="date_end" name="trip-start" class="fnt mr-sm-2 custom-select date-picker"
-                       value="2018-07-23"
-                       min="2018-01-01" max="2021-12-31"/>
+            <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center" style="margin: 0;" for="inlineFormCustomSelect">Дата окончания:
+                <input type="date" id="date_end" name="trip-start" class="fnt mr-sm-2 custom-select date-picker" value="2018-07-23" min="2018-01-01" max="2021-12-31" />
             </label>
         </div>
 
@@ -111,10 +109,6 @@
 
         </form>
         <div id="troubleToast"> </div>
-    </div>
-    <div align="center">
-        <div class="margin-block" />
-        <a name="" id="add_row_btn" class="btn btn-primary " href="#" role="button"> Press to add 1 row!</a>
     </div>
 </body>
 

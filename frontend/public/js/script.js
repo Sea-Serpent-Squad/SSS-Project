@@ -1,7 +1,10 @@
 // пройдемся во всей виртуальной технике и привяжем реакцию на событие, т.е сделаем, чтобы при нажатии на вирт. технику она выделялась кружком (selected vehicle)
 // и соответственно выделение снималось, когда нажали на другую вирт. технику (или на ту же самую еще один раз)
 
-const socket = io();
+const socket = io.connect('', {
+    'forceNew': true,
+    'reconnection': false
+});
 const orderID = window.location.href.split('/')[4];
 socket.on('setOrderData', (data) => {
     setData(data);
@@ -10,10 +13,8 @@ socket.on('setOrderData', (data) => {
 socket.emit('takeOrderMutex', orderID);
 
 socket.on('disconnect', () => {
-    setTimeout(() => {
-        alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
-        document.location.reload();
-    }, 2000);
+    alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
+    document.location.reload();
 });
 
 let timeline1, timeline2;

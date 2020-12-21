@@ -1,15 +1,15 @@
-CREATE DATABASE  IF NOT EXISTS `logistic` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE  IF NOT EXISTS `logistic` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `logistic`;
--- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.32, for Linux (x86_64)
 --
--- Host: localhost    Database: logistic
+-- Host: 127.0.0.1    Database: logistic
 -- ------------------------------------------------------
--- Server version	8.0.22
+-- Server version	5.7.32-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,12 +23,12 @@ USE `logistic`;
 
 DROP TABLE IF EXISTS `должность`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `должность` (
-  `ID_Должность` int NOT NULL AUTO_INCREMENT,
-  `Название` text NOT NULL,
+  `ID_Должность` int(11) NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ID_Должность`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,15 +47,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `заявка`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `заявка` (
-  `ID_Заявка` varchar(12) NOT NULL,
-  `ID_Статус` int NOT NULL,
-  `ID_Приоритет` int NOT NULL,
-  `ID_Сотрудник` int NOT NULL,
+  `ID_Заявка` varchar(12) CHARACTER SET utf8 NOT NULL,
+  `ID_Статус` int(11) NOT NULL,
+  `ID_Приоритет` int(11) NOT NULL,
+  `ID_Сотрудник` int(11) NOT NULL,
   `Дата-время начало` datetime NOT NULL,
   `Дата-время конец` datetime NOT NULL,
-  `ID_Объект` int DEFAULT NULL,
+  `ID_Объект` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID_Заявка`),
   KEY `Заявка_fk0` (`ID_Статус`),
   KEY `Заявка_fk1` (`ID_Приоритет`),
@@ -65,7 +65,7 @@ CREATE TABLE `заявка` (
   CONSTRAINT `Заявка_fk1` FOREIGN KEY (`ID_Приоритет`) REFERENCES `приоритет` (`ID_Приоритет`),
   CONSTRAINT `Заявка_fk3` FOREIGN KEY (`ID_Сотрудник`) REFERENCES `сотрудник` (`ID_Сотрудник`),
   CONSTRAINT `заявка_ibfk_1` FOREIGN KEY (`ID_Объект`) REFERENCES `объект` (`ID_Объект`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,13 +84,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `класстехники`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `класстехники` (
-  `ID_КлассТехники` int NOT NULL AUTO_INCREMENT,
-  `Название` text NOT NULL,
-  `Описание` text NOT NULL,
+  `ID_КлассТехники` int(11) NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 NOT NULL,
+  `Описание` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ID_КлассТехники`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,13 +109,13 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `объект`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `объект` (
-  `ID_Объект` int NOT NULL AUTO_INCREMENT,
-  `Название` text NOT NULL,
-  `Местоположение` text NOT NULL,
+  `ID_Объект` int(11) NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 NOT NULL,
+  `Местоположение` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ID_Объект`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,12 +134,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `приоритет`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `приоритет` (
-  `ID_Приоритет` int NOT NULL AUTO_INCREMENT,
-  `Название` text NOT NULL,
+  `ID_Приоритет` int(11) NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ID_Приоритет`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,15 +158,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `сотрудник`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `сотрудник` (
-  `ID_Сотрудник` int NOT NULL AUTO_INCREMENT,
-  `ID_Должность` int NOT NULL,
-  `ФИО` text NOT NULL,
+  `ID_Сотрудник` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_Должность` int(11) NOT NULL,
+  `ФИО` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ID_Сотрудник`),
   KEY `Сотрудник_fk0` (`ID_Должность`),
   CONSTRAINT `Сотрудник_fk0` FOREIGN KEY (`ID_Должность`) REFERENCES `должность` (`ID_Должность`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,12 +185,12 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `статус`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `статус` (
-  `ID_Статус` int NOT NULL AUTO_INCREMENT,
-  `Название` text NOT NULL,
+  `ID_Статус` int(11) NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ID_Статус`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,19 +209,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `точкамаршрута`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `точкамаршрута` (
-  `ID_Заявка` varchar(12) NOT NULL,
-  `Название` text NOT NULL,
-  `Очередность` int NOT NULL,
+  `ID_Заявка` varchar(12) CHARACTER SET utf8 NOT NULL,
+  `Название` text CHARACTER SET utf8 NOT NULL,
+  `Очередность` int(11) NOT NULL,
   `Длительность` time NOT NULL,
-  `ID_КлассТехники` int NOT NULL,
-  `ID_Объект` int DEFAULT NULL,
-  `ID_Транспорт` int NOT NULL,
-  `ID_Сотрудник` int NOT NULL,
+  `ID_КлассТехники` int(11) NOT NULL,
+  `ID_Объект` int(11) DEFAULT NULL,
+  `ID_Транспорт` int(11) NOT NULL,
+  `ID_Сотрудник` int(11) NOT NULL,
   `Время прибытия` datetime NOT NULL,
   `Количество_класс` double DEFAULT NULL,
-  `СуррКлюч` int NOT NULL AUTO_INCREMENT,
+  `СуррКлюч` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`СуррКлюч`),
   KEY `ТочкаМаршрута_fk2` (`ID_КлассТехники`),
   KEY `ТочкаМаршрута_fk4` (`ID_Транспорт`),
@@ -233,7 +233,7 @@ CREATE TABLE `точкамаршрута` (
   CONSTRAINT `ТочкаМаршрута_fk4` FOREIGN KEY (`ID_Транспорт`) REFERENCES `транспорт` (`ID_Транспорт`),
   CONSTRAINT `ТочкаМаршрута_fk5` FOREIGN KEY (`ID_Сотрудник`) REFERENCES `сотрудник` (`ID_Сотрудник`),
   CONSTRAINT `точкамаршрута_ibfk_1` FOREIGN KEY (`ID_Заявка`) REFERENCES `заявка` (`ID_Заявка`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,21 +252,21 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `транспорт`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `транспорт` (
-  `ID_Транспорт` int NOT NULL AUTO_INCREMENT,
-  `Название` text NOT NULL,
-  `Описание` text NOT NULL,
-  `ID_КлассТехники` int NOT NULL,
+  `ID_Транспорт` int(11) NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 NOT NULL,
+  `Описание` text CHARACTER SET utf8 NOT NULL,
+  `ID_КлассТехники` int(11) NOT NULL,
   `Вместимость` float NOT NULL,
   `Удалена` tinyint(1) NOT NULL,
-  `ID_Объект` int NOT NULL,
+  `ID_Объект` int(11) NOT NULL,
   PRIMARY KEY (`ID_Транспорт`),
   KEY `Транспорт_fk0` (`ID_КлассТехники`),
   KEY `Транспорт_fk1` (`ID_Объект`),
   CONSTRAINT `Транспорт_fk0` FOREIGN KEY (`ID_КлассТехники`) REFERENCES `класстехники` (`ID_КлассТехники`),
   CONSTRAINT `Транспорт_fk1` FOREIGN KEY (`ID_Объект`) REFERENCES `объект` (`ID_Объект`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -292,7 +292,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -326,7 +326,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -359,7 +359,7 @@ DELIMITER ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -397,4 +397,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-20  4:51:12
+-- Dump completed on 2020-12-21 19:54:05

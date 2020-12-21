@@ -9,8 +9,10 @@ const figureUP = 'fas fa-sort-amount-up-alt';
 const socket = io();
 
 socket.on('disconnect', () => {
-    alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
-    document.location.reload();
+    setTimeout(() => {
+        alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
+        document.location.reload();
+    }, 2000);
 });
 
 // как только страница прогрузится

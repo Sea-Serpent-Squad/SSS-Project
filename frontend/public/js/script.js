@@ -13,8 +13,10 @@ socket.on('setOrderData', (data) => {
 socket.emit('takeOrderMutex', orderID);
 
 socket.on('disconnect', () => {
-    alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
-    document.location.reload();
+    setTimeout(() => {
+        alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
+        document.location.reload();
+    }, 2000);
 });
 
 let timeline1, timeline2;

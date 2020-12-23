@@ -211,5 +211,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         className: 'bold rounded',
         start: '11:00',
         end: '11:30'
+		}], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');*/
 
 });

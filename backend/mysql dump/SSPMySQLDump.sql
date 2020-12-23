@@ -1,15 +1,15 @@
-CREATE DATABASE  IF NOT EXISTS `logistic` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+CREATE DATABASE  IF NOT EXISTS `logistic` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `logistic`;
--- MySQL dump 10.13  Distrib 5.7.32, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: logistic
+-- Host: localhost    Database: logistic
 -- ------------------------------------------------------
--- Server version	5.7.32-0ubuntu0.18.04.1
+-- Server version	8.0.22
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,10 +23,10 @@ USE `logistic`;
 
 DROP TABLE IF EXISTS `должность`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `должность` (
-  `ID_Должность` int(11) NOT NULL AUTO_INCREMENT,
-  `Название` text CHARACTER SET utf8 NOT NULL,
+  `ID_Должность` int NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`ID_Должность`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -47,15 +47,16 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `заявка`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `заявка` (
   `ID_Заявка` varchar(12) CHARACTER SET utf8 NOT NULL,
-  `ID_Статус` int(11) NOT NULL,
-  `ID_Приоритет` int(11) NOT NULL,
-  `ID_Сотрудник` int(11) NOT NULL,
+  `ID_Статус` int NOT NULL,
+  `ID_Приоритет` int NOT NULL,
+  `ID_Сотрудник` int NOT NULL,
   `Дата-время начало` datetime NOT NULL,
   `Дата-время конец` datetime NOT NULL,
-  `ID_Объект` int(11) DEFAULT NULL,
+  `ID_Объект` int DEFAULT NULL,
+  `ОписаниеРабот` text CHARACTER SET utf8,
   PRIMARY KEY (`ID_Заявка`),
   KEY `Заявка_fk0` (`ID_Статус`),
   KEY `Заявка_fk1` (`ID_Приоритет`),
@@ -74,7 +75,7 @@ CREATE TABLE `заявка` (
 
 LOCK TABLES `заявка` WRITE;
 /*!40000 ALTER TABLE `заявка` DISABLE KEYS */;
-INSERT INTO `заявка` VALUES ('20-10-1',3,3,5,'2020-10-31 08:00:00','2020-10-31 20:00:00',13),('20-10-2',4,1,6,'2020-10-31 09:20:00','2020-10-31 15:00:00',12),('20-10-3',1,2,7,'2020-10-31 11:00:00','2020-10-31 13:20:00',25),('20-10-4',2,2,5,'2020-10-30 11:00:00','2020-10-30 13:20:00',12);
+INSERT INTO `заявка` VALUES ('20-10-1',3,3,5,'2020-10-31 08:00:00','2020-10-31 20:00:00',13,'Завоз воды'),('20-10-2',4,1,6,'2020-10-31 09:20:00','2020-10-31 15:00:00',12,'Прочистка внутренних дорог'),('20-10-3',1,2,7,'2020-10-31 11:00:00','2020-10-31 13:20:00',25,'Погрузка снега'),('20-10-4',2,2,5,'2020-10-30 11:00:00','2020-10-30 13:20:00',12,'ТП: Промывка скважины');
 /*!40000 ALTER TABLE `заявка` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,11 +85,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `класстехники`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `класстехники` (
-  `ID_КлассТехники` int(11) NOT NULL AUTO_INCREMENT,
-  `Название` text CHARACTER SET utf8 NOT NULL,
-  `Описание` text CHARACTER SET utf8 NOT NULL,
+  `ID_КлассТехники` int NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `Описание` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`ID_КлассТехники`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -109,11 +110,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `объект`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `объект` (
-  `ID_Объект` int(11) NOT NULL AUTO_INCREMENT,
-  `Название` text CHARACTER SET utf8 NOT NULL,
-  `Местоположение` text CHARACTER SET utf8 NOT NULL,
+  `ID_Объект` int NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `Местоположение` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`ID_Объект`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -134,10 +135,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `приоритет`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `приоритет` (
-  `ID_Приоритет` int(11) NOT NULL AUTO_INCREMENT,
-  `Название` text CHARACTER SET utf8 NOT NULL,
+  `ID_Приоритет` int NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`ID_Приоритет`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -158,11 +159,11 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `сотрудник`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `сотрудник` (
-  `ID_Сотрудник` int(11) NOT NULL AUTO_INCREMENT,
-  `ID_Должность` int(11) NOT NULL,
-  `ФИО` text CHARACTER SET utf8 NOT NULL,
+  `ID_Сотрудник` int NOT NULL AUTO_INCREMENT,
+  `ID_Должность` int NOT NULL,
+  `ФИО` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`ID_Сотрудник`),
   KEY `Сотрудник_fk0` (`ID_Должность`),
   CONSTRAINT `Сотрудник_fk0` FOREIGN KEY (`ID_Должность`) REFERENCES `должность` (`ID_Должность`)
@@ -185,10 +186,10 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `статус`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `статус` (
-  `ID_Статус` int(11) NOT NULL AUTO_INCREMENT,
-  `Название` text CHARACTER SET utf8 NOT NULL,
+  `ID_Статус` int NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`ID_Статус`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -209,19 +210,19 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `точкамаршрута`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `точкамаршрута` (
   `ID_Заявка` varchar(12) CHARACTER SET utf8 NOT NULL,
   `Название` text CHARACTER SET utf8 NOT NULL,
-  `Очередность` int(11) NOT NULL,
+  `Очередность` int NOT NULL,
   `Длительность` time NOT NULL,
-  `ID_КлассТехники` int(11) NOT NULL,
-  `ID_Объект` int(11) DEFAULT NULL,
-  `ID_Транспорт` int(11) NOT NULL,
-  `ID_Сотрудник` int(11) NOT NULL,
+  `ID_КлассТехники` int NOT NULL,
+  `ID_Объект` int DEFAULT NULL,
+  `ID_Транспорт` int DEFAULT NULL,
+  `ID_Сотрудник` int NOT NULL,
   `Время прибытия` datetime NOT NULL,
   `Количество_класс` double DEFAULT NULL,
-  `СуррКлюч` int(11) NOT NULL AUTO_INCREMENT,
+  `СуррКлюч` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`СуррКлюч`),
   KEY `ТочкаМаршрута_fk2` (`ID_КлассТехники`),
   KEY `ТочкаМаршрута_fk4` (`ID_Транспорт`),
@@ -233,7 +234,7 @@ CREATE TABLE `точкамаршрута` (
   CONSTRAINT `ТочкаМаршрута_fk4` FOREIGN KEY (`ID_Транспорт`) REFERENCES `транспорт` (`ID_Транспорт`),
   CONSTRAINT `ТочкаМаршрута_fk5` FOREIGN KEY (`ID_Сотрудник`) REFERENCES `сотрудник` (`ID_Сотрудник`),
   CONSTRAINT `точкамаршрута_ibfk_1` FOREIGN KEY (`ID_Заявка`) REFERENCES `заявка` (`ID_Заявка`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -242,7 +243,7 @@ CREATE TABLE `точкамаршрута` (
 
 LOCK TABLES `точкамаршрута` WRITE;
 /*!40000 ALTER TABLE `точкамаршрута` DISABLE KEYS */;
-INSERT INTO `точкамаршрута` VALUES ('20-10-1','Завоз воды',1,'03:00:00',10,1,1,1,'2020-10-31 08:00:00',10,17),('20-10-1','Завоз воды',2,'01:00:00',5,15,5,2,'2020-10-31 19:00:00',2,18),('20-10-2','Прочистка внутренних дорог',1,'04:30:00',8,15,4,3,'2020-10-31 09:20:00',5,19),('20-10-2','Прочистка внутренних дорог',2,'02:30:00',9,15,3,4,'2020-10-31 12:30:00',3,20),('20-10-3','Погрузка снега',1,'01:00:00',7,20,9,1,'2020-10-31 11:00:00',30,21),('20-10-3','Погрузка снега',2,'01:20:00',5,20,8,2,'2020-10-31 12:00:00',10,22),('20-10-4','ТП: Промывка скважины',1,'01:00:00',10,17,7,3,'2020-10-30 11:00:00',35,23),('20-10-4','ТП: Промывка скважины',2,'01:20:00',5,17,6,4,'2020-10-30 12:00:00',10,24);
+INSERT INTO `точкамаршрута` VALUES ('20-10-1','Завоз воды',1,'02:00:00',10,1,NULL,1,'2020-10-31 11:00:00',10,17),('20-10-1','Перевозка сотрудников',2,'01:00:00',5,15,5,2,'2020-10-31 16:00:00',2,18),('20-10-2','Перенос снега для транспортировки',1,'04:30:00',8,15,4,3,'2020-10-31 09:20:00',5,19),('20-10-2','Транспортировка снега',2,'02:30:00',9,15,3,4,'2020-10-31 12:30:00',3,20),('20-10-3','Перевозка снега',1,'01:00:00',7,20,9,1,'2020-10-31 11:00:00',30,21),('20-10-3','Перевозка сотрудников',2,'01:20:00',5,20,8,2,'2020-10-31 12:00:00',10,22),('20-10-4','Завоз дистиллированной воды',1,'01:00:00',10,17,7,3,'2020-10-31 08:00:00',35,23),('20-10-4','Перевозка сотрудников',2,'01:20:00',5,17,6,4,'2020-10-31 12:00:00',10,24),('20-10-1','Привозка',1,'04:00:00',10,1,NULL,1,'2020-10-31 13:00:00',10,25),('20-10-1','Гроб',3,'02:00:00',10,1,7,1,'2020-10-31 08:00:00',10,26);
 /*!40000 ALTER TABLE `точкамаршрута` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -252,15 +253,15 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `транспорт`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `транспорт` (
-  `ID_Транспорт` int(11) NOT NULL AUTO_INCREMENT,
-  `Название` text CHARACTER SET utf8 NOT NULL,
-  `Описание` text CHARACTER SET utf8 NOT NULL,
-  `ID_КлассТехники` int(11) NOT NULL,
+  `ID_Транспорт` int NOT NULL AUTO_INCREMENT,
+  `Название` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `Описание` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `ID_КлассТехники` int NOT NULL,
   `Вместимость` float NOT NULL,
   `Удалена` tinyint(1) NOT NULL,
-  `ID_Объект` int(11) NOT NULL,
+  `ID_Объект` int NOT NULL,
   PRIMARY KEY (`ID_Транспорт`),
   KEY `Транспорт_fk0` (`ID_КлассТехники`),
   KEY `Транспорт_fk1` (`ID_Объект`),
@@ -286,34 +287,31 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'logistic'
 --
-/*!50003 DROP PROCEDURE IF EXISTS `getAppInfo` */;
+/*!50003 DROP PROCEDURE IF EXISTS `getBusyCars` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`user`@`localhost` PROCEDURE `getAppInfo`(IN `id` varchar(12))
+CREATE DEFINER=`user`@`localhost` PROCEDURE `getBusyCars`(IN `id_app` varchar(12), IN `type` int, IN `order` int)
+    COMMENT 'order - очередность вирт техники'
 begin
-	declare places text; 
+declare dateApp date;
+declare startTask time;
+declare endTask time;
+set dateApp = (select date(`Дата-время начало`) from `заявка` where `id_заявка` = `id_app`); 
+set startTask = (select min(time(`Время прибытия`)) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order` );
 
-	declare uniquePlaceFound int;
-    set uniquePlaceFound = (select count(distinct(`ID_Объект`)) from `точкамаршрута` where `ID_Заявка` = `id`); 
-    if (uniquePlaceFound = 1) then set places = (select (select `Название` from `объект` where `ID_Объект` = A.`ID_Объект`) from `точкамаршрута` A where `ID_Заявка` = `id` order by `ID_Заявка` limit 1);
-    else set places = (select group_concat(`Название` SEPARATOR ' - ') from `объект` where `ID_Объект` IN ( select `ID_Объект` from `точкамаршрута` A where `ID_Заявка` = `id` ));
-    end if; 
-	
-    
-	select  `id` as 'ID', 
-    B.`Название` as `Статус`,
-    (select `название` from `объект` where `ID_Объект` = (A.`id_объект`)) as 'Цех',
-    CONCAT(time(A.`Дата-время начало`), ' - ',time(A.`Дата-время конец`), ' ', date(A.`Дата-время конец`)) as 'Время и дата выполнения',
-    places as 'Место работы', (select `ФИО` from `сотрудник` where `id_сотрудник` = A.`ID_Сотрудник`) as 'Ответственный',
-    (SELECT E.`Название` FROM `точкамаршрута` E WHERE E.`ID_Заявка` = `ID` AND `Очередность` = 1) as 'Описание работы'
-    from `заявка` A, `статус` B where A.`ID_Заявка` = `id` and B.`ID_Статус` = A.`ID_Статус`;
+set startTask = subtime(startTask, '01:00:00'); 
+set endTask = (select max(time(addtime(`Время прибытия`, `длительность`))) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order`);
+select `Название` from `транспорт` where `id_транспорт` in (select `id_транспорт` from `точкамаршрута` where DATE(`Время прибытия`) = dateApp and `ID_КлассТехники` = `type` and ((time(`Время прибытия`) <= startTask and time(addtime(`Время прибытия`, `Длительность`)) > startTask) 
+or (time(`Время прибытия`) < endTask and time(`Время прибытия`) > startTask) or (time(`Время прибытия`) < endTask and time(addtime(`Время прибытия`, `длительность`)) > endTask))
+); 
+
 end ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -387,6 +385,28 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getWorksLocsAndTimesOfApp` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`user`@`localhost` PROCEDURE `getWorksLocsAndTimesOfApp`(IN `id` varchar(12))
+begin
+	select distinct(select C.`Название` from `класстехники` C where C.`ID_КлассТехники` = A.`ID_КлассТехники`) as 'Техника', 
+    (select B.`Название` from `объект` B where B.`ID_Объект` = A.`ID_Объект`) as 'Локация',
+    (select group_concat(concat('[',D.`Название`,',', D.`Время прибытия`, ',', ADDTIME(D.`Время прибытия`, D.`Длительность`),']')) from `точкамаршрута` D where D.`ID_Заявка` = `id` and D.`ID_КлассТехники` = A.`ID_КлассТехники` and D.`Очередность` = A.`Очередность`) as 'Таймлайн'
+    from `точкамаршрута` A where `id` = A.`ID_Заявка` group by `Очередность` order by `Очередность`; 
+end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -397,4 +417,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-21 19:54:05
+-- Dump completed on 2020-12-24  1:53:52

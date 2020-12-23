@@ -19,14 +19,6 @@ class Timeline extends DOMElement {
     formDataSet(date, timeIntervals) {
         let timeLines = [];
 
-        // это невидимый элемент, чтобы изначально таймлайн открывался с диапазоном 9:00 до 20:00
-        timeIntervals.push({
-            id: 666,
-            group: 0,
-            className: 'transparent',
-            start: `${date}T08:00`,
-            end: `${date}T20:00`,
-        });
         // а теперь проходим по массиву из аргумента функции
         timeIntervals.forEach(element => {
             timeLines.push({

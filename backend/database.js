@@ -1,6 +1,10 @@
 let mysql = require('mysql');
 const util = require('util');
 
+String.prototype.replaceAll = function (search, replace) {
+    return this.split(search).join(replace);
+}
+
 module.exports = class database {
 
     constructor() {
@@ -83,26 +87,31 @@ module.exports = class database {
         }
     }
 
-    async getParsedTimelineInfo(value)
-    {
-        let parsedValue = value.replaceAll('[','').replaceAll(']','').split(',');
+    async getParsedTimelineInfo(value) {
+        let parsedValue = value.replaceAll('[', '').replaceAll(']', '').split(',');
         let results = [];
-        for (let i = 0; i < parsedValue.length; i += 3)
-        {
-            results.push({Работа: parsedValue[i], Начало: parsedValue[i+1], Конец: parsedValue[i+2]})
+        for (let i = 0; i < parsedValue.length; i += 3) {
+            results.push({
+                Работа: parsedValue[i],
+                Начало: parsedValue[i + 1],
+                Конец: parsedValue[i + 2]
+            })
         }
         return results;
     }
 
     // - для получения информации для timeline'a второй страницы
-    async getTimeLineInfo(ID){
+    async getTimeLineInfo(ID) {
         let timelineInfoList = [];
         try {
             const results = await this.query(`call getWorksLocsAndTimesOfApp('${ID}')`);
             for (const element of results[0]) {
-                timelineInfoList.push({Техника: element['Техника'], Локация: element['Локация']});
+                timelineInfoList.push({
+                    Техника: element['Техника'],
+                    Локация: element['Локация']
+                });
                 let row = await this.getParsedTimelineInfo(element['Таймлайн']);
-                timelineInfoList[timelineInfoList.length-1]['Таймлайн'] = row;
+                timelineInfoList[timelineInfoList.length - 1]['Таймлайн'] = row;
             };
         } catch (error) {
             console.error(`BD: ${error}`);

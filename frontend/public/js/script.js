@@ -28,7 +28,7 @@ socket.on('disconnect', () => {
     }, 2000);
 });
 
-let timeline = [];
+let timelines = [];
 
 function prepareCollapse() {
     document.querySelectorAll(".virt-vehicle").forEach((elem) => {
@@ -76,6 +76,37 @@ function vehicleChoice() {
             veh.click();
         });
     });
+}
+
+function op_mp() {
+    if (confirm("Вы точно хотите вернуться на главную страницу без сохранения результата?"))
+        window.open("/", "_self");
+}
+
+function op_save() {
+    window.open("/", "_self");
+}
+
+function nextMsg() {
+    if (messages.length == 0) {
+        op_save();
+    } else {
+        $('#add_save').html(messages.pop()).delay(1000).fadeOut(1000, nextMsg);
+    }
+};
+
+var messages = [
+    "Сохранено!",
+].reverse();
+
+
+async function setData(value) {
+    document.getElementById('request-id').innerText = value['ID'];
+    document.getElementById('request-date').innerText = value['ВремяДата'];
+    document.getElementById('request-department').innerText = value['Цех'];
+    document.getElementById('request-place').innerText = value['Места'];
+    document.getElementById('request-person').innerText = value['Ответственный'];
+    document.getElementById('request-desc').innerText = value['Описание'];
 }
 
 function getParsedValues(value) {
@@ -138,79 +169,50 @@ async function setNewTimeline(value) {
     i++;
 }
 
-function op_mp() {
-    if (confirm("Вы точно хотите вернуться на главную страницу без сохранения результата?"))
-        window.open("/", "_self");
-}
-
-function op_save() {
-    window.open("/", "_self");
-}
-
-function nextMsg() {
-    if (messages.length == 0) {
-        op_save();
-    } else {
-        $('#add_save').html(messages.pop()).delay(1000).fadeOut(1000, nextMsg);
-    }
-};
-
-var messages = [
-    "Сохранено!",
-].reverse();
-
-
-async function setData(value) {
-    document.getElementById('request-id').innerText = value['ID'];
-    document.getElementById('request-date').innerText = value['ВремяДата'];
-    document.getElementById('request-department').innerText = value['Цех'];
-    document.getElementById('request-place').innerText = value['Места'];
-    document.getElementById('request-person').innerText = value['Ответственный'];
-    document.getElementById('request-desc').innerText = value['Описание'];
-}
-
 // как только документ прогрузится вызвать эти функции
 document.addEventListener("DOMContentLoaded", function (event) {
     socket.emit('getOrderInfo', orderID);
+    socket.emit('getTimelineInfo', orderID);
 
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());
     prepareCollapse();
+    // addNewVehicle();
     vehicleChoice();
     // - Добавим таймлайн
 
 
-    /*timeline = new Timeline('timeline1', '2020-10-31', [{
-                id: 1,
-                group: 1,
-                className: 'bold rounded',
-                start: '11:00',
-                end: '11:30'
-            },
-            {
-                id: 2,
-                group: 2,
-                className: 'normal rounded',
-                start: '11:30',
-                end: '13:00'
-            },
-            {
-                id: 3,
-                group: 3,
-                className: 'bold rounded',
-                start: '13:00',
-                end: '13:20'
-            }
-        ],
-        groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
+    /* timeline = new Timeline('timeline1', '2020-10-31', [{
+               id: 1,
+               group: 1,
+               className: 'bold rounded',
+               start: '2020-10-31T11:00',
+               end: '2020-10-31T11:30'
+           },
+           {
+               id: 2,
+               group: 2,
+               className: 'normal rounded',
+               start: '2020-10-31T11:30',
+               end: '2020-10-31T13:00'
+           },
+           {
+               id: 3,
+               group: 3,
+               className: 'bold rounded',
+               start: '2020-10-31T13:00',
+               end: '2020-10-31T13:20'
+           }
+       ],
+       groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
 
 
-    timeline2 = new Timeline('timeline2', '2020-10-31', [{
-        id: 1,
-        group: 1,
-        className: 'bold rounded',
-        start: '11:00',
-        end: '11:30'
-		}], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');*/
+   /*timeline2 = new Timee('timeline2', '2020-10-31', [{
+       id: 1,
+       group: 1,
+       className: 'bold rounded',
+       start: '11:00',
+       end: '11:30'
+   }], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');*/
 
 });

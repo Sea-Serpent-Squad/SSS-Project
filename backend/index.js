@@ -3,8 +3,8 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
-    'pingInterval': 1000,
-    'pingTimeout': 2000
+    'pingInterval': 10000,
+    'pingTimeout': 1000
 });
 const path = require('path');
 const port = 80;

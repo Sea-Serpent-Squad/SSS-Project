@@ -6,7 +6,14 @@ let downSight = true; // true - DOWN, false - UP
 const figureDOWN = 'fas fa-sort-amount-down-alt'; // to put figure
 const figureUP = 'fas fa-sort-amount-up-alt';
 
-let socket = io();
+const socket = io();
+
+socket.on('disconnect', () => {
+    setTimeout(() => {
+        alert("Потеряно соединение с сервером. Несохраненные данные были потеряны.");
+        document.location.reload();
+    }, 2000);
+});
 
 // как только страница прогрузится
 document.addEventListener("DOMContentLoaded", function (event) {

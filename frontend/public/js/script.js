@@ -5,9 +5,18 @@ const socket = io.connect('', {
     'forceNew': true,
     'reconnection': false
 });
+
+let i = 0,
+    idCntr = 0;
+
 const orderID = window.location.href.split('/')[4];
+
 socket.on('setOrderData', (data) => {
     setData(data);
+});
+
+socket.on('setTimelineInfo', (data) => {
+    setNewTimeline(data);
 });
 
 socket.emit('takeOrderMutex', orderID);
@@ -19,7 +28,7 @@ socket.on('disconnect', () => {
     }, 2000);
 });
 
-let timeline1, timeline2;
+let timeline = [];
 
 function prepareCollapse() {
     document.querySelectorAll(".virt-vehicle").forEach((elem) => {
@@ -61,45 +70,72 @@ function vehicleChoice() {
                 id: 5,
                 group: 0,
                 className: 'drive',
-                start: '10:00',
-                end: '10:59'
+                start: '2020-10-31T10:00',
+                end: '2020-10-31T10:59'
             }, 'Дорога')
             veh.click();
         });
     });
 }
 
-// добавление виртуальной техники по кнопке
-let vehicleCount = 2;
+function getParsedValues(value) {
+    let collection = [];
+    for (let i = 0; i < value.length; i++) {
+        collection.push({
+            id: idCntr,
+            group: idCntr++,
+            className: 'bold rounded',
+            start: value[i]['Начало'].replace(' ', 'T'),
+            end: value[i]['Конец'].replace(' ', 'T')
+        })
+    }
+    idCntr = 0;
+    return collection;
+}
 
-// эта функция привязывает добавление новой вирт. техники к кнопке
-function addNewVehicle() {
-    document.getElementById("btn-create").addEventListener('click', () => {
-        // закрываем открытый блок collapse
-        $('.collapse.show').collapse('hide');
-        // формируем новую строку в списке вирт. техники (копируя первую виртуальную технику)
-        let list = document.getElementById("virt-list-of-vehicles");
-        let newRow = document.createElement("div");
-        newRow.className = "row mt-5";
-        newRow.innerHTML = list.children[1].innerHTML;
-        // теперь меняем значения
-        let vehicleName = newRow.children[0];
-        let vehiclePlace = newRow.children[1];
-        let vehicleOper = newRow.children[2];
-        vehicleName.setAttribute("href", "#vehicle" + (++vehicleCount));
-        vehicleName.children[1].innerHTML = "ВТ" + vehicleCount + ": Сгенерированная техника";
-        vehiclePlace.innerHTML = "unknown place";
-        vehicleOper.innerHTML = "unknown operation";
-        list.insertBefore(newRow, list.lastElementChild);
-        let collapseList = document.getElementById("collapse-list-of-vehicles");
-        let newCollapse = document.createElement("div");
-        newCollapse.className = "collapse";
-        newCollapse.setAttribute("id", "vehicle" + vehicleCount);
-        newCollapse.innerHTML = collapseList.children[0].innerHTML;
-        newCollapse.children[0].innerText = "Невиртуальная сгенерированная техника №" + vehicleCount;
-        collapseList.appendChild(newCollapse);
-        prepareCollapse();
-    });
+async function setNewTimeline(value) {
+
+    let parent = document.querySelector('#virt-list-of-vehicles')
+    let data = document.createElement('dl')
+    data.className = 'row mt-5'
+    let autoLink = document.createElement('a');
+    autoLink.className = 'virt-vehicle col-3 m-auto';
+    autoLink.setAttribute("data-toggle", 'collapse')
+    autoLink.setAttribute("role", 'button')
+    autoLink.role = 'button';
+    autoLink.href = `#vehicle${i}`;
+    autoLink.innerHTML = `<span></span><span>${value['Техника']}</span>`;
+    let location = document.createElement('dd');
+    location.className = 'col-2 m-auto';
+    location.innerHTML = `${value['Локация']}`;
+    let timeline = document.createElement('dd');
+
+    timeline.className = 'col-7 m-auto';
+    timeline.id = `timeline${i}`;
+    data.append(autoLink);
+    data.append(location);
+    data.append(timeline);
+    parent.append(data);
+
+    let groups = []
+    value['Таймлайн'].forEach(element => {
+        groups.push(element['Работа']);
+    })
+    timelines.push(new Timeline(`timeline${i}`, value['Таймлайн'][0]['Начало'].split(' ')[0],
+        getParsedValues(value['Таймлайн']), groupNames = groups));
+
+
+
+    let collapseList = document.getElementById("collapse-list-of-vehicles");
+    let newCollapse = document.createElement("div");
+    newCollapse.className = "collapse";
+    newCollapse.setAttribute("id", "vehicle" + i);
+    newCollapse.innerHTML = collapseList.children[0].innerHTML;
+    newCollapse.children[0].innerText = "Невиртуальная сгенерированная техника №" + i;
+    collapseList.appendChild(newCollapse);
+    prepareCollapse();
+
+    i++;
 }
 
 function op_mp() {
@@ -140,12 +176,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());
     prepareCollapse();
-    addNewVehicle();
     vehicleChoice();
     // - Добавим таймлайн
 
 
-    timeline = new Timeline('timeline1', '2020-10-31', [{
+    /*timeline = new Timeline('timeline1', '2020-10-31', [{
                 id: 1,
                 group: 1,
                 className: 'bold rounded',
@@ -176,6 +211,5 @@ document.addEventListener("DOMContentLoaded", function (event) {
         className: 'bold rounded',
         start: '11:00',
         end: '11:30'
-    }], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');
 
 });

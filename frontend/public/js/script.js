@@ -2,10 +2,17 @@
 // и соответственно выделение снималось, когда нажали на другую вирт. технику (или на ту же самую еще один раз)
 
 const socket = io();
+let i = 0, idCntr = 0;
 const orderID = window.location.href.split('/')[4];
+
 socket.on('setOrderData', (data) => {
     setData(data);
 });
+
+socket.on('setTimelineInfo', (data) => {
+    setNewTimeline(data);
+});
+
 
 socket.emit('takeOrderMutex', orderID);
 
@@ -16,7 +23,7 @@ socket.on('disconnect', () => {
     }, 2000);
 });
 
-let timeline1, timeline2;
+let timelines = [];
 
 function prepareCollapse() {
     document.querySelectorAll(".virt-vehicle").forEach((elem) => {
@@ -58,8 +65,8 @@ function vehicleChoice() {
                 id: 5,
                 group: 0,
                 className: 'drive',
-                start: '10:00',
-                end: '10:59'
+                start: '2020-10-31T10:00',
+                end: '2020-10-31T10:59'
             }, 'Дорога')
             veh.click();
         });
@@ -130,49 +137,114 @@ async function setData(value) {
     document.getElementById('request-desc').innerText = value['Описание'];
 }
 
+function getParsedValues(value)
+{
+    let collection = [];
+    for (let i = 0; i < value.length; i++)
+    {
+        collection.push({
+            id: idCntr,
+            group: idCntr++,
+            className: 'bold rounded',
+            start: value[i]['Начало'].replace(' ', 'T'),
+            end: value[i]['Конец'].replace(' ', 'T')
+        })
+    }
+    idCntr = 0;
+    return collection;
+}
+
+async function setNewTimeline(value)
+{
+
+    let parent = document.querySelector('#virt-list-of-vehicles')
+    let data = document.createElement('dl')
+    data.className = 'row mt-5'
+    let autoLink = document.createElement('a');
+    autoLink.className = 'virt-vehicle col-3 m-auto';
+    autoLink.setAttribute("data-toggle",'collapse')
+    autoLink.setAttribute("role",'button')
+    autoLink.role = 'button';
+    autoLink.href = `#vehicle${i}`;
+    autoLink.innerHTML = `<span></span><span>${value['Техника']}</span>`;
+    let location = document.createElement('dd');
+    location.className = 'col-2 m-auto';
+    location.innerHTML = `${value['Локация']}`;
+    let timeline = document.createElement('dd');
+
+    timeline.className = 'col-7 m-auto';
+    timeline.id = `timeline${i}`;
+    data.append (autoLink)
+    data.append (location)
+    data.append (timeline)
+    parent.append(data);
+
+    let groups = []
+    value['Таймлайн'].forEach(element =>
+    {
+        groups.push(element['Работа']);
+    })
+        timelines.push(new Timeline(`timeline${i}`, value['Таймлайн'][0]['Начало'].split(' ')[0],
+                       getParsedValues(value['Таймлайн']), groupNames = groups));
+
+
+
+        let collapseList = document.getElementById("collapse-list-of-vehicles");
+        let newCollapse = document.createElement("div");
+        newCollapse.className = "collapse";
+        newCollapse.setAttribute("id", "vehicle" + i);
+        newCollapse.innerHTML = collapseList.children[0].innerHTML;
+        newCollapse.children[0].innerText = "Невиртуальная сгенерированная техника №" + i;
+        collapseList.appendChild(newCollapse);
+        prepareCollapse();
+
+        i++;
+}
+
 // как только документ прогрузится вызвать эти функции
 document.addEventListener("DOMContentLoaded", function (event) {
     socket.emit('getOrderInfo', orderID);
+    socket.emit('getTimelineInfo', orderID);
 
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());
     prepareCollapse();
-    addNewVehicle();
+   // addNewVehicle();
     vehicleChoice();
     // - Добавим таймлайн
 
 
-    timeline = new Timeline('timeline1', '2020-10-31', [{
-                id: 1,
-                group: 1,
-                className: 'bold rounded',
-                start: '11:00',
-                end: '11:30'
-            },
-            {
-                id: 2,
-                group: 2,
-                className: 'normal rounded',
-                start: '11:30',
-                end: '13:00'
-            },
-            {
-                id: 3,
-                group: 3,
-                className: 'bold rounded',
-                start: '13:00',
-                end: '13:20'
-            }
-        ],
-        groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
+    /* timeline = new Timeline('timeline1', '2020-10-31', [{
+               id: 1,
+               group: 1,
+               className: 'bold rounded',
+               start: '2020-10-31T11:00',
+               end: '2020-10-31T11:30'
+           },
+           {
+               id: 2,
+               group: 2,
+               className: 'normal rounded',
+               start: '2020-10-31T11:30',
+               end: '2020-10-31T13:00'
+           },
+           {
+               id: 3,
+               group: 3,
+               className: 'bold rounded',
+               start: '2020-10-31T13:00',
+               end: '2020-10-31T13:20'
+           }
+       ],
+       groupNames = ['Подбивка', 'Промывка 30 м<sup>3</sup>', 'Отбивка']);
 
 
-    timeline2 = new Timeline('timeline2', '2020-10-31', [{
-        id: 1,
-        group: 1,
-        className: 'bold rounded',
-        start: '11:00',
-        end: '11:30'
-    }], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');
+   /*timeline2 = new Timee('timeline2', '2020-10-31', [{
+       id: 1,
+       group: 1,
+       className: 'bold rounded',
+       start: '11:00',
+       end: '11:30'
+   }], groupNames = ['Промывка 30 м<sup>3</sup>'], 'bottom');*/
 
 });

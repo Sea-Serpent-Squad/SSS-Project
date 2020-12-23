@@ -18,13 +18,14 @@ class Timeline extends DOMElement {
     // - Собираем переданные значения в массив для DataSet
     formDataSet(date, timeIntervals) {
         let timeLines = [];
+
         // это невидимый элемент, чтобы изначально таймлайн открывался с диапазоном 9:00 до 20:00
         timeIntervals.push({
             id: 666,
-            group: 1,
+            group: 0,
             className: 'transparent',
-            start: '09:00',
-            end: '20:00'
+            start: `${date}T08:00`,
+            end: `${date}T20:00`,
         });
         // а теперь проходим по массиву из аргумента функции
         timeIntervals.forEach(element => {
@@ -33,8 +34,8 @@ class Timeline extends DOMElement {
                 group: element['group'],
                 className: element['className'],
                 content: '',
-                start: vis.moment.utc(new Date(`${date}T${element['start']}`)),
-                end: vis.moment.utc(new Date(`${date}T${element['end']}`))
+                start: vis.moment.utc(new Date(element['start'])),
+                end: vis.moment.utc(new Date(element['end']))
             });
         })
 
@@ -72,7 +73,7 @@ class Timeline extends DOMElement {
             zoomMin: 600000,
             stackSubgroups: true,
             orientation: orientation,
-            min: new Date(`${date}T09:00`),
+            min: new Date(`${date}T08:00`),
             max: new Date(`${date}T20:00`)
         });
         this.update();

@@ -68,7 +68,7 @@ module.exports = class database {
                 filledRowList.push(row);
             };
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD123: ${error}`);
         }
         return filledRowList;
     };
@@ -81,5 +81,32 @@ module.exports = class database {
         } catch (error) {
             console.error(`BD: ${error}`);
         }
+    }
+
+    async getParsedTimelineInfo(value)
+    {
+        let parsedValue = value.replaceAll('[','').replaceAll(']','').split(',');
+        let results = [];
+        for (let i = 0; i < parsedValue.length; i += 3)
+        {
+            results.push({Работа: parsedValue[i], Начало: parsedValue[i+1], Конец: parsedValue[i+2]})
+        }
+        return results;
+    }
+
+    // - для получения информации для timeline'a второй страницы
+    async getTimeLineInfo(ID){
+        let timelineInfoList = [];
+        try {
+            const results = await this.query(`call getWorksLocsAndTimesOfApp('${ID}')`);
+            for (const element of results[0]) {
+                timelineInfoList.push({Техника: element['Техника'], Локация: element['Локация']});
+                let row = await this.getParsedTimelineInfo(element['Таймлайн']);
+                timelineInfoList[timelineInfoList.length-1]['Таймлайн'] = row;
+            };
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
+        return timelineInfoList;
     }
 };

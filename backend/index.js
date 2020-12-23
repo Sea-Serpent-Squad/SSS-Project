@@ -69,6 +69,16 @@ io.on('connection', (socket) => {
             });
         });
     });
+
+    socket.on('getTimelineInfo', (ID) => {
+        dbHandle.getTimeLineInfo(ID).then(timelinesInfo => {
+            timelinesInfo.forEach(element =>
+            {
+                socket.emit('setTimelineInfo', element);
+            })
+        })
+    })
+
 });
 
 // открываем доступ к статике, т.е к папке public (css, js, картинки)

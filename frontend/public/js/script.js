@@ -6,7 +6,23 @@ const socket = io.connect('', {
     'reconnection': false
 });
 
+// - будем запоминать массивы с занятыми водилами каждый с очередностью
+const busyDriversList = new Map()
+const ordersRealizeTime = new Map()
+
 const orderID = window.location.href.split('/')[4];
+
+let orderCount = 1;
+
+socket.on('setAppOrderFreeDrivers', (AppOrderDriversList) =>
+{
+    getFreeDriversOnAppAndOrder(AppOrderDriversList);
+});
+
+socket.on('setOrderStartEndDuration', orderInfo =>
+{
+    saveOrderInfo(orderInfo)
+});
 
 socket.on('setOrderHeaderInfo', (data) => {
     setOrderHeaderInfo(data);
@@ -80,13 +96,31 @@ function getParsedValues(timeline) {
     return collection;
 }
 
+async function getFreeDriversOnAppAndOrder(AppOrderDriversList)
+{
+   await busyDriversList.set(AppOrderDriversList['ord'], AppOrderDriversList['values']);
+   socket.emit('getOrderStartEndDuration', orderID, AppOrderDriversList['ord']);
+   await addDrivers(AppOrderDriversList);
+}
+
+async function saveOrderInfo(orderInfo)
+{
+    ordersRealizeTime.set(orderInfo['Очередность'],
+        {
+            Начало: orderInfo['Начало'],
+            Конец: orderInfo['Конец'],
+            Длительность: orderInfo['Длительность']
+        })
+}
+
 // добавить виртуальную технику на страницу
 async function setVirtVehicleInfo(index, virtVehicle)
 {
     // название виртуальной техники и место работы
     let parent = document.querySelector('#virt-list-of-vehicles');
     let data = document.createElement('dl');
-    data.className = 'row mt-5';
+    data.className = `row mt-5`;
+    data.id = `technica${index+1}`
     let autoLink = document.createElement('a');
     autoLink.className = 'virt-vehicle col-3 m-auto';
     autoLink.setAttribute("data-toggle", 'collapse');
@@ -106,6 +140,7 @@ async function setVirtVehicleInfo(index, virtVehicle)
     data.append(location);
     data.append(timeline);
     parent.append(data);
+
     // формируем таймлайн для виртуальной техники
     let groups = [];
     virtVehicle['Таймлайн'].forEach(singleTask => {
@@ -114,6 +149,9 @@ async function setVirtVehicleInfo(index, virtVehicle)
     globalDate = virtVehicle['Таймлайн'][0]['Начало'].split(' ')[0];
     timelines.push(new Timeline(`timeline${index}`, globalDate,
         getParsedValues(virtVehicle['Таймлайн']), groups));
+
+    // - добавление инфы о количестве очердностей
+
 }
 
 function prepareCollapse() {
@@ -142,9 +180,48 @@ function prepareCollapse() {
     });
 }
 
-async function vehicleChoice(index,date,start,end) {
+function driverToSelect(id)
+{
+
+    console.log(id)
+}
+
+async function addDrivers(ind)
+{
+    let data = document.createElement('dl')
+    data.className = 'row mt-5 disabled';
+    data.id = `driverOf${ind['ord']}`
+    let drivers = document.createElement('div')
+    drivers.className = 'col-3 font-weight-bold';
+    drivers.innerText = 'Исполнитель'
+
+    data.appendChild(drivers)
+
+    let dddrivers = document.createElement('dd')
+    dddrivers.className = 'col-2'
+    let selections = document.createElement('select')
+    selections.className = 'custom-select mr-sm-2 text-center'
+    selections.id = `inlineFormCustom${ind['ord']}`
+    await selections.addEventListener('change', () => console.log(selections.id))
+    let names = ind['values']
+
+    names.forEach((element, index) =>
+    {
+        let child = document.createElement('option')
+        child.value = index+1
+        child.innerText = element['ФИО']
+        selections.appendChild(child)
+    })
+
+    dddrivers.appendChild(selections);
+    data.appendChild(dddrivers);
+    const tech = document.querySelector(`#technica${ind['ord']}`);
+    tech.parentNode.insertBefore(data, tech.nextSibling);
+}
+
+async function vehicleChoice(index, date, start, end) {
     let arr = Array.from(document.querySelectorAll(`div > #list-of-free-vehicles-${index} a`));
-    arr.forEach((elem) => {
+    arr.forEach((elem, indexed) => {
         elem.addEventListener('click', () => {
             let veh = document.querySelector(`a[href="#vehicle${index}"]`);
             veh.children[1].innerText = elem.innerText;
@@ -159,12 +236,15 @@ async function vehicleChoice(index,date,start,end) {
                 start: start,
                 end: end
             }, 'Дорога')
-            veh.click();
+            document.querySelector(`#driverOf${index+1}`).classList.remove('disabled')
+           veh.click();
         });
     });
+   socket.emit('getFreeDriverList', orderID, orderCount++);
 }
 
 async function setRealVehiclesInfo(index, realVehicles) {
+
     let collapseList = document.getElementById("collapse-list-of-vehicles");
     collapseList.classList.add('disabled');
     let newCollapse = document.createElement("div");
@@ -259,8 +339,7 @@ async function setRealVehiclesInfo(index, realVehicles) {
 // как только документ прогрузится вызвать эти функции
 document.addEventListener("DOMContentLoaded", function (event) {
     socket.emit('getOrderInfo', orderID);
-    socket.emit('getTimelineInfo', orderID);
-
+    //socket.emit('getTimelineInfo', orderID);
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
     document.getElementById('add_save').addEventListener('click', () => nextMsg());
     //prepareCollapse();

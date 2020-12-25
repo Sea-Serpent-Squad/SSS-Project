@@ -40,7 +40,7 @@ module.exports = class database {
             results.forEach(element => list.push(element['ID_Заявка']));
             return list;
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'getOrderIdList' exception: ${error}`);
         }
     };
 
@@ -49,6 +49,7 @@ module.exports = class database {
         if (!results[0][0]) throw new Error("Order not found");
         return results[0][0];
     }
+
     async isOrderExist(ID) {
         try {
             const results = await this.query(`SELECT COUNT(*) FROM заявка WHERE ID_Заявка = "${ID}"`);
@@ -56,7 +57,7 @@ module.exports = class database {
             if (value == 1) return true;
             else return false;
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'isOrderExist' exception: ${error}`);
             return false;
         }
     }
@@ -72,7 +73,7 @@ module.exports = class database {
                 filledRowList.push(row);
             };
         } catch (error) {
-            console.error(`BD123: ${error}`);
+            console.error(`BD-'getOrderList' exception: ${error}`);
         }
         return filledRowList;
     };
@@ -83,7 +84,7 @@ module.exports = class database {
             const results = await this.query(`call getOrderInfo('${ID}')`);
             return results[0][0];
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'getOrderHeaderInfo' exception: ${error}`);
         }
     }
 
@@ -115,7 +116,7 @@ module.exports = class database {
                 });
             };
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'getVirtVehiclesInfo' exception: ${error}`);
         }
         return virtVehiclesInfo;
     }
@@ -125,7 +126,7 @@ module.exports = class database {
             const results = await this.query(`CALL logistic.getWorksTimesOfRealCar(${ID_car})`);
             return results[0];
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'getWorksTimesOfRealCar' exception: ${error}`);
         }
     };
 
@@ -135,7 +136,7 @@ module.exports = class database {
             const results = await this.query(`CALL logistic.getRealCars(${isBusy}, '${ID_app}', ${type}, ${order})`);
             return results[0];
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'getRealCarIdList' exception: ${error}`);
         }
     };
 
@@ -174,10 +175,33 @@ module.exports = class database {
                 await fillList(false, freeCarIdList);
             }
         } catch (error) {
-            console.error(`BD: ${error}`);
+            console.error(`BD-'getRealCarList' exception: ${error}`);
         }
         return carList;
     };
+
+    async getFreeDriversList(ID_App, order)
+    {
+        try
+        {
+            const results = await this.query(`call getFreeDrivers('${ID_App}', ${order})`);
+            return results[0];
+        } catch (error) {
+            console.error(`BD-'getFreeDriversList' exception: ${error}`);
+        }
+    }
+
+    async getOrderStartEndDurationOfApp(ID_App, order)
+    {
+        try
+        {
+            const result = await this.query(`call logistic.getOrderStartEndDurationOfApp('${ID_App}', ${order})`)
+            return result[0];
+        }
+        catch (error) {
+            console.error(`BD-'getOrderStartEndDurationOfApp' exception: ${error}`);
+        }
+    }
 };
 
 

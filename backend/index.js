@@ -86,6 +86,21 @@ io.on('connection', (socket) => {
         });
     });
 
+    socket.on('getFreeDriverList', (ID, ord) =>
+    {
+        dbHandle.getFreeDriversList(ID, ord).then(values =>
+        {
+            socket.emit('setAppOrderFreeDrivers', {ord, values});
+        })
+    })
+
+    socket.on('getOrderStartEndDuration', (ID, ord) =>
+    {
+        dbHandle.getOrderStartEndDurationOfApp(ID, ord).then(values =>
+        {
+            socket.emit('setOrderStartEndDuration', values);
+        })
+    })
 });
 
 // открываем доступ к статике, т.е к папке public (css, js, картинки)

@@ -103,12 +103,6 @@ a.virt-vehicle[aria-expanded="true"] {
     border: 4px solid #5088B3;
 }
 
-.ignored-col {
-    background-color: #FFFFFF;
-    border: 4px solid #000000;
-}
-
-/* =============== */
 .header {
 
     display: flex;

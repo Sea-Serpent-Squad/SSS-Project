@@ -154,7 +154,6 @@ function create_td_value(text) {
 
 function getStatusName(str) {
     if (str == 'Новый') return 'new-col';
-    if (str == 'Просмотрен') return 'ignored-col';
     if (str == 'Принят') return 'green-col';
     return 'red-col';
 }

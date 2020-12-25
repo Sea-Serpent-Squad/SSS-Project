@@ -191,16 +191,28 @@ module.exports = class database {
         }
     }
 
-    async getOrderStartEndDurationOfApp(ID_App, order)
+    async getOrderStartEndDurationOfApp(ID_App)
     {
+        let listElements = [];
         try
         {
-            const result = await this.query(`call logistic.getOrderStartEndDurationOfApp('${ID_App}', ${order})`)
-            return result[0];
+            let ordersCountQuery = await this.query(`SELECT COUNT(distinct (Очередность)) as \`orderSize\` FROM точкамаршрута WHERE ID_Заявка = '${ID_App}'`);
+            let ordersCount = ordersCountQuery[0]['orderSize'];
+            let fillList = async (list, order) =>
+            {
+                for (let i = 1; i <= order; i++)
+                {
+                    const result = await this.query(`call logistic.getOrderStartEndDurationOfApp('${ID_App}', ${i})`);
+                    list.push(result[0][0]);
+                }
+            }
+
+            await fillList(listElements, ordersCount);
         }
         catch (error) {
             console.error(`BD-'getOrderStartEndDurationOfApp' exception: ${error}`);
         }
+        return listElements;
     }
 };
 

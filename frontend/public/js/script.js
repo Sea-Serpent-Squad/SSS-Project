@@ -8,7 +8,10 @@ const socket = io.connect('', {
 
 // - будем запоминать массивы с занятыми водилами каждый с очередностью
 const busyDriversList = new Map()
+
 const ordersRealizeTime = new Map()
+
+let collisionArray = [];
 
 const orderID = window.location.href.split('/')[4];
 
@@ -21,7 +24,8 @@ socket.on('setAppOrderFreeDrivers', (AppOrderDriversList) =>
 
 socket.on('setOrderStartEndDuration', orderInfo =>
 {
-    saveOrderInfo(orderInfo)
+    collisionArray = orderInfo;
+    setCollisionLogic(orderInfo);
 });
 
 socket.on('setOrderHeaderInfo', (data) => {
@@ -96,21 +100,30 @@ function getParsedValues(timeline) {
     return collection;
 }
 
+function getTimepointForVisTimeline(timeline) {
+    let collection = [];
+    for (let i = 0; i < timeline.length; ++i) {
+        collection.push({
+            id: i,
+            group: timeline[i]['group'],
+            className: `${timeline[i]['className']} rounded`,
+            start: timeline[i]['Начало'],
+            end: timeline[i]['Конец']
+        })
+    }
+    return collection;
+}
+
 async function getFreeDriversOnAppAndOrder(AppOrderDriversList)
 {
    await busyDriversList.set(AppOrderDriversList['ord'], AppOrderDriversList['values']);
-   socket.emit('getOrderStartEndDuration', orderID, AppOrderDriversList['ord']);
+   //await socket.emit('getOrderStartEndDuration', orderID);
    await addDrivers(AppOrderDriversList);
 }
 
-async function saveOrderInfo(orderInfo)
+async function setCollisionLogic(orderInfo)
 {
-    ordersRealizeTime.set(orderInfo['Очередность'],
-        {
-            Начало: orderInfo['Начало'],
-            Конец: orderInfo['Конец'],
-            Длительность: orderInfo['Длительность']
-        })
+    console.log(collisionArray);
 }
 
 // добавить виртуальную технику на страницу
@@ -180,12 +193,6 @@ function prepareCollapse() {
     });
 }
 
-function driverToSelect(id)
-{
-
-    console.log(id)
-}
-
 async function addDrivers(ind)
 {
     let data = document.createElement('dl')
@@ -203,7 +210,7 @@ async function addDrivers(ind)
     selections.className = 'custom-select mr-sm-2 text-center'
     selections.id = `inlineFormCustom${ind['ord']}`
     await selections.addEventListener('change', () => console.log(selections.id))
-    let names = ind['values']
+    let names = ind['values'];
 
     names.forEach((element, index) =>
     {
@@ -240,7 +247,8 @@ async function vehicleChoice(index, date, start, end) {
            veh.click();
         });
     });
-   socket.emit('getFreeDriverList', orderID, orderCount++);
+    socket.emit('getFreeDriverList', orderID, orderCount);
+    orderCount++;
 }
 
 async function setRealVehiclesInfo(index, realVehicles) {
@@ -274,20 +282,10 @@ async function setRealVehiclesInfo(index, realVehicles) {
     listOfFreeVehiclesTitle.className = "col mb-4";
     listOfFreeVehiclesTitle.innerText = "Свободная техника";
     listOfFreeVehiclesTitleRow.append(listOfFreeVehiclesTitle);
-    let listOfBusyVehicles = document.createElement("div");
-    listOfBusyVehicles.id = `list-of-busy-vehicles-${index}`;
-    let listOfBusyVehiclesTitleRow = document.createElement("div");
-    listOfBusyVehiclesTitleRow.className = "row mt-5";
-    listOfBusyVehicles.append(listOfBusyVehiclesTitleRow);
-    let listOfBusyVehiclesTitle = document.createElement("div");
-    listOfBusyVehiclesTitle.className = "col mb-4";
-    listOfBusyVehiclesTitle.innerText = "Занятая техника";
-    listOfBusyVehiclesTitleRow.append(listOfBusyVehiclesTitle);
-    listOfVehicles.append(listOfBusyVehicles);
 
     let groupsFree = [];
     let timelinePointsFree = [];
-    for (const vehicle of realVehicles)
+    realVehicles.forEach( (vehicle,veh_i) =>
     {
         let vehicleDiv = document.createElement("div");
         vehicleDiv.className = "row mt-4";
@@ -296,18 +294,21 @@ async function setRealVehiclesInfo(index, realVehicles) {
         vehicleLink.innerText = vehicle['Название'];
         vehicleDiv.append(vehicleLink);
         let isBusy = vehicle['Занято'];
-        if (isBusy) listOfBusyVehicles.append(vehicleDiv);
-        else
+        if (!isBusy)
         {
+            console.log(vehicle['Название']);
             groupsFree.push(vehicle['Название']);
+            console.log(vehicle['ТочкаМаршрута']);
             if (vehicle['ТочкаМаршрута'].length > 0)
             {
-                timelinePointsFree.push(vehicle['ТочкаМаршрута']);
+                timelinePointsFree.push({group: veh_i, className: 'busy', Начало: vehicle['ТочкаМаршрута'][0]['Начало'], Конец: vehicle['ТочкаМаршрута'][0]['Конец']});
             }
-            timelinePointsFree.push({Начало: '2020-10-31 10:00', Конец: '2020-10-31 10:30'});
+            let startTime = new Date(`${globalDate} ${collisionArray[index]['Начало']}`);
+            startTime.setHours(startTime.getHours() + 1);
+            timelinePointsFree.push({group: veh_i, className: 'work', Начало: startTime, Конец: `${globalDate}T${collisionArray[index]['Конец']}`});
             listOfFreeVehicles.append(vehicleDiv);
         }
-    }
+    });
     // таймлайны
     let listOfTimelines = document.createElement("div");
     listOfTimelines.className = "col ml-2";
@@ -326,13 +327,11 @@ async function setRealVehiclesInfo(index, realVehicles) {
     timelineFree.id = `timelineFreeRealVeh${index}`;
     listOfTimelines.append(timelineFree);
 
-    let timelineBusy = document.createElement("div");
-    timelineBusy.className = "col";
-    timelineBusy.id = `timelineBusyRealVeh${index}`;
-    listOfTimelines.append(timelineBusy);
     collapseList.appendChild(newCollapse);
-    await vehicleChoice(index, globalDate, '2020-10-31 10:00', '2020-10-31 11:00');
-    let freeTimeline = new Timeline(`timelineFreeRealVeh${index}`, globalDate, getParsedValues(timelinePointsFree), groupsFree);
+    let endTimeOfRoad = new Date(`${globalDate} ${collisionArray[index]['Начало']}`);
+    endTimeOfRoad.setHours(endTimeOfRoad.getHours() + 1);
+    await vehicleChoice(index, globalDate, `${globalDate}T${collisionArray[index]['Начало']}`, endTimeOfRoad);
+    let freeTimeline = new Timeline(`timelineFreeRealVeh${index}`, globalDate, getTimepointForVisTimeline(timelinePointsFree), groupsFree);
 
 }
 

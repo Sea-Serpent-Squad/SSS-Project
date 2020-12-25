@@ -234,7 +234,7 @@ CREATE TABLE `точкамаршрута` (
   CONSTRAINT `ТочкаМаршрута_fk4` FOREIGN KEY (`ID_Транспорт`) REFERENCES `транспорт` (`ID_Транспорт`),
   CONSTRAINT `ТочкаМаршрута_fk5` FOREIGN KEY (`ID_Сотрудник`) REFERENCES `сотрудник` (`ID_Сотрудник`),
   CONSTRAINT `точкамаршрута_ibfk_1` FOREIGN KEY (`ID_Заявка`) REFERENCES `заявка` (`ID_Заявка`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -243,7 +243,7 @@ CREATE TABLE `точкамаршрута` (
 
 LOCK TABLES `точкамаршрута` WRITE;
 /*!40000 ALTER TABLE `точкамаршрута` DISABLE KEYS */;
-INSERT INTO `точкамаршрута` VALUES ('20-10-1','Завоз воды',1,'02:00:00',10,1,NULL,NULL,'2020-10-31 11:00:00',10,17),('20-10-1','Перевозка сотрудников',2,'01:00:00',5,15,NULL,NULL,'2020-10-31 16:00:00',2,18),('20-10-2','Перенос снега для транспортировки',1,'04:30:00',8,15,NULL,NULL,'2020-10-31 09:20:00',5,19),('20-10-2','Транспортировка снега',2,'02:30:00',9,15,NULL,NULL,'2020-10-31 12:30:00',3,20),('20-10-3','Перевозка снега',1,'01:00:00',7,20,NULL,NULL,'2020-10-31 11:00:00',30,21),('20-10-3','Перевозка сотрудников',2,'01:20:00',5,20,NULL,NULL,'2020-10-31 12:00:00',10,22),('20-10-4','Завоз дистиллированной воды',1,'03:00:00',10,17,1,NULL,'2020-10-31 08:00:00',35,23),('20-10-4','Перевозка сотрудников',2,'01:20:00',5,17,NULL,NULL,'2020-10-31 12:00:00',10,24),('20-10-1','Привозка',1,'04:00:00',10,1,NULL,NULL,'2020-10-31 08:00:00',10,25),('20-10-1','Завоз воды',3,'02:00:00',10,1,NULL,NULL,'2020-10-31 11:00:00',10,26);
+INSERT INTO `точкамаршрута` VALUES ('20-10-1','Завоз воды',1,'02:00:00',10,1,NULL,NULL,'2020-10-31 11:00:00',10,1),('20-10-1','Перевозка сотрудников',2,'01:00:00',5,15,NULL,NULL,'2020-10-31 16:00:00',2,2),('20-10-1','Привозка',1,'04:00:00',10,1,NULL,NULL,'2020-10-31 08:00:00',10,3),('20-10-1','Завоз воды',3,'02:00:00',10,1,NULL,NULL,'2020-10-31 11:00:00',10,4),('20-10-2','Транспортировка снега',2,'02:30:00',9,15,NULL,NULL,'2020-10-31 12:30:00',3,5),('20-10-2','Перенос снега для транспортировки',1,'04:30:00',8,15,NULL,NULL,'2020-10-31 09:20:00',5,6),('20-10-3','Перевозка снега',1,'01:00:00',7,20,NULL,NULL,'2020-10-31 11:00:00',30,7),('20-10-3','Перевозка сотрудников',2,'01:20:00',5,20,NULL,NULL,'2020-10-31 12:00:00',10,8),('20-10-4','Перевозка сотрудников',1,'01:20:00',5,17,5,NULL,'2020-10-31 10:00:00',10,9),('20-10-4','Завоз дистиллированной воды',2,'04:00:00',10,17,1,NULL,'2020-10-31 13:00:00',35,10);
 /*!40000 ALTER TABLE `точкамаршрута` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -339,7 +339,7 @@ BEGIN
      DECLARE ОбъектНачало text;
      DECLARE ОбъектКонец text;
      DECLARE МестоРаботы text;
-	 SET lastPos = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = `ID` AND ADDDATE(`Время прибытия`, `Длительность`) = (SELECT MAX(ADDDATE(B.`Время прибытия`, B.`Длительность`)) from `точкамаршрута` B where `id`= B.`ID_Заявка`));
+	 SET lastPos = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = `ID` AND ADDDATE(`Время прибытия`, `Длительность`) = (SELECT MAX(ADDDATE(B.`Время прибытия`, B.`Длительность`)) from `точкамаршрута` B where `id`= B.`ID_Заявка` limit 1) limit 1);
      
      SET ОбъектНачало = (SELECT `Название` FROM `объект` WHERE `ID_Объект` = (SELECT `ID_Объект` FROM `точкамаршрута` WHERE `ID_Заявка` = `ID` AND  `Время прибытия` = (SELECT MIN(B.`Время прибытия`) from `точкамаршрута` B where `id`= B.`ID_Заявка`) AND `Очередность` = 1 limit 1));
      SET ОбъектКонец =  (SELECT `Название` FROM `объект` WHERE `ID_Объект` = lastPos);
@@ -460,7 +460,7 @@ CREATE DEFINER=`user`@`localhost` PROCEDURE `getOrderStartEndDurationOfApp`(IN `
 BEGIN
 declare min_time, max_time time;
 	set min_time = (select min(subtime(time(`Время прибытия`), '01:00:00')) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order` limit 1);
-    set max_time = (select addtime(addtime(time(`Время прибытия`), `Длительность`), '01:00:00') from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order` limit 1);
+    set max_time = (select addtime(time(`Время прибытия`), `Длительность`) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order` limit 1);
     
 
 	select distinct `Очередность`, min_time as 'Начало', max_time as 'Конец', subtime(max_time, min_time) as 'Длительность' from `точкамаршрута`
@@ -561,4 +561,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-25 22:16:30
+-- Dump completed on 2020-12-26  2:28:38

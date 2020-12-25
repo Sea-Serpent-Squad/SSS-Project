@@ -69,6 +69,11 @@ io.on('connection', (socket) => {
                 Описание: orderHeaderInfo['Описание работы']
             });
         });
+        // инфа по длительности операций (общая, все подзадачи) для конкретной очередности вирт. техники
+        dbHandle.getOrderStartEndDurationOfApp(ID).then(values =>
+        {
+            socket.emit('setOrderStartEndDuration', values);
+        })
         // отправляем информацию - виртуальная техника с таймлайном
         dbHandle.getVirtVehiclesInfo(ID).then(virtVehiclesInfo => {
             virtVehiclesInfo.forEach((virtVehicle, index) => {
@@ -88,19 +93,13 @@ io.on('connection', (socket) => {
 
     socket.on('getFreeDriverList', (ID, ord) =>
     {
+        console.log("dfa");
         dbHandle.getFreeDriversList(ID, ord).then(values =>
         {
             socket.emit('setAppOrderFreeDrivers', {ord, values});
         })
     })
 
-    socket.on('getOrderStartEndDuration', (ID, ord) =>
-    {
-        dbHandle.getOrderStartEndDurationOfApp(ID, ord).then(values =>
-        {
-            socket.emit('setOrderStartEndDuration', values);
-        })
-    })
 });
 
 // открываем доступ к статике, т.е к папке public (css, js, картинки)

@@ -77,8 +77,8 @@ module.exports = class database {
         return filledRowList;
     };
 
-    // - для получения данных о заявке на второй странице
-    async getOrderInfo(ID) {
+    // - для получения данных о заявке на второй странице (заголовок заявки)
+    async getOrderHeaderInfo(ID) {
         try {
             const results = await this.query(`call getOrderInfo('${ID}')`);
             return results[0][0];
@@ -100,22 +100,84 @@ module.exports = class database {
         return results;
     }
 
-    // - для получения информации для timeline'a второй страницы
-    async getTimeLineInfo(ID) {
-        let timelineInfoList = [];
+    // - для получения информации для виртуальной техники и timeline'a второй страницы
+    async getVirtVehiclesInfo(ID) {
+        let virtVehiclesInfo = [];
         try {
             const results = await this.query(`call getWorksLocsAndTimesOfApp('${ID}')`);
             for (const element of results[0]) {
-                timelineInfoList.push({
+                let timeline = await this.getParsedTimelineInfo(element['Таймлайн']);
+                virtVehiclesInfo.push({
+                    ID_КлассТехники: element['ID_КлассТехники'],
                     Техника: element['Техника'],
-                    Локация: element['Локация']
+                    Локация: element['Локация'],
+                    Таймлайн: timeline
                 });
-                let row = await this.getParsedTimelineInfo(element['Таймлайн']);
-                timelineInfoList[timelineInfoList.length - 1]['Таймлайн'] = row;
             };
         } catch (error) {
             console.error(`BD: ${error}`);
         }
-        return timelineInfoList;
+        return virtVehiclesInfo;
     }
+    // Получить начало и конец точек маршрута реальной машины
+    async getWorksTimesOfRealCar(ID_car) {
+        try {
+            const results = await this.query(`CALL logistic.getWorksTimesOfRealCar(${ID_car})`);
+            return results[0];
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
+    };
+
+    // - получение списка ID машин и их названий
+    async getRealCarIdList(isBusy, ID_app, type, order) {
+        try {
+            const results = await this.query(`CALL logistic.getRealCars(${isBusy}, '${ID_app}', ${type}, ${order})`);
+            return results[0];
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
+    };
+
+    // - получение списка реальных машин с таймлайнами, order - очередность вирт. техники
+    async getRealCarList(ID_app, type, order) {
+        // это просто структура carList, чтобы редактор понимал возвращаемый тип и делал подсказки
+        let carList = [{
+            Название: "", Занято: true, ТочкаМаршрута: [{Начало: "", Конец: ""}]
+        }];
+        // поэтому сразу удаляю этот фиктивный элемент - структуру
+        carList.pop();
+        try {
+            // получаем список ID заявок
+            let busyCarIdList = await this.getRealCarIdList(true,ID_app,type,order);
+            let freeCarIdList = await this.getRealCarIdList(false,ID_app,type,order);
+            let fillList = async (isBusy, carIdList) =>
+            {
+                for (const element of carIdList) {
+                    let ID = element['id_транспорт'];
+                    let name = element['Название'];
+                    let worksTimes = await this.getWorksTimesOfRealCar(ID);
+                    let newElem = {
+                        Название: name,
+                        Занято: isBusy,
+                        ТочкаМаршрута: worksTimes
+                    }
+                    carList.push(newElem);
+                };
+            }
+            if (busyCarIdList.length > 0)
+            {
+                await fillList(true,  busyCarIdList);
+            }
+            if (freeCarIdList.length > 0)
+            {
+                await fillList(false, freeCarIdList);
+            }
+        } catch (error) {
+            console.error(`BD: ${error}`);
+        }
+        return carList;
+    };
 };
+
+

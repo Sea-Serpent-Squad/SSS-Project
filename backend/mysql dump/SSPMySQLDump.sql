@@ -75,7 +75,7 @@ CREATE TABLE `заявка` (
 
 LOCK TABLES `заявка` WRITE;
 /*!40000 ALTER TABLE `заявка` DISABLE KEYS */;
-INSERT INTO `заявка` VALUES ('20-10-1',3,3,5,'2020-10-31 08:00:00','2020-10-31 20:00:00',13,'Завоз воды'),('20-10-2',4,1,6,'2020-10-31 09:20:00','2020-10-31 15:00:00',12,'Прочистка внутренних дорог'),('20-10-3',1,2,7,'2020-10-31 11:00:00','2020-10-31 13:20:00',25,'Погрузка снега'),('20-10-4',2,2,5,'2020-10-30 11:00:00','2020-10-30 13:20:00',12,'ТП: Промывка скважины');
+INSERT INTO `заявка` VALUES ('20-10-1',3,3,5,'2020-10-31 08:00:00','2020-10-31 20:00:00',13,'ТП: Завоз воды'),('20-10-2',4,1,6,'2020-10-31 09:20:00','2020-10-31 15:00:00',12,'Прочистка внутренних дорог'),('20-10-3',1,2,7,'2020-10-31 11:00:00','2020-10-31 13:20:00',25,'Погрузка снега'),('20-10-4',2,2,5,'2020-10-30 11:00:00','2020-10-30 13:20:00',12,'ТП: Промывка скважины');
 /*!40000 ALTER TABLE `заявка` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -243,7 +243,7 @@ CREATE TABLE `точкамаршрута` (
 
 LOCK TABLES `точкамаршрута` WRITE;
 /*!40000 ALTER TABLE `точкамаршрута` DISABLE KEYS */;
-INSERT INTO `точкамаршрута` VALUES ('20-10-1','Завоз воды',1,'02:00:00',10,1,NULL,1,'2020-10-31 11:00:00',10,17),('20-10-1','Перевозка сотрудников',2,'01:00:00',5,15,5,2,'2020-10-31 16:00:00',2,18),('20-10-2','Перенос снега для транспортировки',1,'04:30:00',8,15,4,3,'2020-10-31 09:20:00',5,19),('20-10-2','Транспортировка снега',2,'02:30:00',9,15,3,4,'2020-10-31 12:30:00',3,20),('20-10-3','Перевозка снега',1,'01:00:00',7,20,9,1,'2020-10-31 11:00:00',30,21),('20-10-3','Перевозка сотрудников',2,'01:20:00',5,20,8,2,'2020-10-31 12:00:00',10,22),('20-10-4','Завоз дистиллированной воды',1,'01:00:00',10,17,7,3,'2020-10-31 08:00:00',35,23),('20-10-4','Перевозка сотрудников',2,'01:20:00',5,17,6,4,'2020-10-31 12:00:00',10,24),('20-10-1','Привозка',1,'04:00:00',10,1,NULL,1,'2020-10-31 13:00:00',10,25);
+INSERT INTO `точкамаршрута` VALUES ('20-10-1','Завоз воды',1,'02:00:00',10,1,NULL,1,'2020-10-31 11:00:00',10,17),('20-10-1','Перевозка сотрудников',2,'01:00:00',5,15,NULL,2,'2020-10-31 16:00:00',2,18),('20-10-2','Перенос снега для транспортировки',1,'04:30:00',8,15,NULL,3,'2020-10-31 09:20:00',5,19),('20-10-2','Транспортировка снега',2,'02:30:00',9,15,NULL,4,'2020-10-31 12:30:00',3,20),('20-10-3','Перевозка снега',1,'01:00:00',7,20,NULL,1,'2020-10-31 11:00:00',30,21),('20-10-3','Перевозка сотрудников',2,'01:20:00',5,20,NULL,2,'2020-10-31 12:00:00',10,22),('20-10-4','Завоз дистиллированной воды',1,'03:00:00',10,17,1,3,'2020-10-31 08:00:00',35,23),('20-10-4','Перевозка сотрудников',2,'01:20:00',5,17,NULL,4,'2020-10-31 12:00:00',10,24),('20-10-1','Привозка',1,'04:00:00',10,1,NULL,1,'2020-10-31 13:00:00',10,25),('20-10-1','Завоз воды',3,'02:00:00',10,1,NULL,4,'2020-10-31 11:00:00',10,26);
 /*!40000 ALTER TABLE `точкамаршрута` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -267,7 +267,7 @@ CREATE TABLE `транспорт` (
   KEY `Транспорт_fk1` (`ID_Объект`),
   CONSTRAINT `Транспорт_fk0` FOREIGN KEY (`ID_КлассТехники`) REFERENCES `класстехники` (`ID_КлассТехники`),
   CONSTRAINT `Транспорт_fk1` FOREIGN KEY (`ID_Объект`) REFERENCES `объект` (`ID_Объект`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,7 +276,7 @@ CREATE TABLE `транспорт` (
 
 LOCK TABLES `транспорт` WRITE;
 /*!40000 ALTER TABLE `транспорт` DISABLE KEYS */;
-INSERT INTO `транспорт` VALUES (1,'В748АО/138','',10,10,0,1),(2,'К079ВА/138','',14,18,0,2),(3,'К332ВА/138','',9,10,0,3),(4,'К046ВА/138','',8,20,0,4),(5,'Г016ВУ/138','',5,10,0,5),(6,'L200_В748АО/138','',5,3,0,1),(7,'L200_К079ВА/138','',10,2,0,2),(8,'VW_Caravell_К332ВА/138','',5,7,0,3),(9,'L200_К046ВА/138','',7,15,0,4),(10,'VW_Caravell_Г016ВУ/138','',7,20,0,5);
+INSERT INTO `транспорт` VALUES (1,'В748АО/138','',10,10,0,1),(2,'К079ВА/138','',14,18,0,2),(3,'К332ВА/138','',9,10,0,3),(4,'К046ВА/138','',8,20,0,4),(5,'Г016ВУ/138','',5,10,0,5),(6,'L200_В748АО/138','',5,3,0,1),(7,'L200_К079ВА/138','',10,2,0,2),(8,'VW_Caravell_К332ВА/138','',5,7,0,3),(9,'L200_К046ВА/138','',7,15,0,4),(10,'VW_Caravell_Г016ВУ/138','',7,20,0,5),(11,'С616АО/138',' ',10,10,0,3);
 /*!40000 ALTER TABLE `транспорт` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,7 +297,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`user`@`localhost` PROCEDURE `getBusyCars`(IN `id_app` varchar(12), IN `type` int, IN `order` int)
+CREATE DEFINER=`user`@`localhost` PROCEDURE `getBusyCars`(IN `busyCars` bool, IN `id_app` varchar(12), IN `type` int, IN `order` int)
     COMMENT 'order - очередность вирт техники'
 begin
 declare dateApp date;
@@ -308,9 +308,13 @@ set startTask = (select min(time(`Время прибытия`)) from `точк�
 
 set startTask = subtime(startTask, '01:00:00'); 
 set endTask = (select max(time(addtime(`Время прибытия`, `длительность`))) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order`);
-select `Название` from `транспорт` where `id_транспорт` in (select `id_транспорт` from `точкамаршрута` where DATE(`Время прибытия`) = dateApp and `ID_КлассТехники` = `type` and ((time(`Время прибытия`) <= startTask and time(addtime(`Время прибытия`, `Длительность`)) > startTask) 
-or (time(`Время прибытия`) < endTask and time(`Время прибытия`) > startTask) or (time(`Время прибытия`) < endTask and time(addtime(`Время прибытия`, `длительность`)) > endTask))
-); 
+IF `busyCars` IS TRUE THEN
+select `Название` from `транспорт` where `id_транспорт` IN ( select `id_транспорт` from `точкамаршрута` where `ID_Транспорт` IS NOT NULL and DATE(`Время прибытия`) = dateApp and `ID_КлассТехники` = `type` and ((time(`Время прибытия`) <= startTask and time(addtime(`Время прибытия`, `Длительность`)) > startTask) 
+or (time(`Время прибытия`) < endTask and time(`Время прибытия`) > startTask) or (time(`Время прибытия`) < endTask and time(addtime(`Время прибытия`, `длительность`)) > endTask)) );
+ELSE 
+select `Название` from `транспорт` where `ID_КлассТехники` = `type` and `id_транспорт` NOT IN ( select `id_транспорт` from `точкамаршрута` where `ID_Транспорт` IS NOT NULL and DATE(`Время прибытия`) = dateApp and `ID_КлассТехники` = `type` and ((time(`Время прибытия`) <= startTask and time(addtime(`Время прибытия`, `Длительность`)) > startTask) 
+or (time(`Время прибытия`) < endTask and time(`Время прибытия`) > startTask) or (time(`Время прибытия`) < endTask and time(addtime(`Время прибытия`, `длительность`)) > endTask)) );
+END IF;
 
 end ;;
 DELIMITER ;
@@ -352,25 +356,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `getFreeCars` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`user`@`localhost` PROCEDURE `getFreeCars`(IN `id_App` int, IN `type` int)
-begin
-	select `Название` from `транспорт` where `ID_КлассТехники` = `type`;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `getOrderInfo` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -405,6 +390,41 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getRealCars` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`user`@`localhost` PROCEDURE `getRealCars`(IN `busyCars` bool, IN `id_app` varchar(12), IN `type` int, IN `order` int)
+    COMMENT 'order - очередность вирт техники'
+begin
+declare dateApp date;
+declare startTask time;
+declare endTask time;
+set dateApp = (select date(`Дата-время начало`) from `заявка` where `id_заявка` = `id_app`); 
+set startTask = (select min(time(`Время прибытия`)) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order` );
+
+set startTask = subtime(startTask, '01:00:00'); 
+set endTask = (select max(time(addtime(`Время прибытия`, `длительность`))) from `точкамаршрута` where `ID_Заявка` = `id_app` and `Очередность` = `order`);
+IF `busyCars` IS TRUE THEN
+select `id_транспорт`, `Название` from `транспорт` where `id_транспорт` IN ( select `id_транспорт` from `точкамаршрута` where `ID_Транспорт` IS NOT NULL and DATE(`Время прибытия`) = dateApp and `ID_КлассТехники` = `type` and ((time(`Время прибытия`) <= startTask and time(addtime(`Время прибытия`, `Длительность`)) > startTask) 
+or (time(`Время прибытия`) < endTask and time(`Время прибытия`) > startTask) or (time(`Время прибытия`) < endTask and time(addtime(`Время прибытия`, `длительность`)) > endTask)) );
+ELSE 
+select `id_транспорт`, `Название` from `транспорт` where `ID_КлассТехники` = `type` and `id_транспорт` NOT IN ( select `id_транспорт` from `точкамаршрута` where `ID_Транспорт` IS NOT NULL and DATE(`Время прибытия`) = dateApp and `ID_КлассТехники` = `type` and ((time(`Время прибытия`) <= startTask and time(addtime(`Время прибытия`, `Длительность`)) > startTask) 
+or (time(`Время прибытия`) < endTask and time(`Время прибытия`) > startTask) or (time(`Время прибытия`) < endTask and time(addtime(`Время прибытия`, `длительность`)) > endTask)) );
+END IF;
+
+end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `getWorksLocsAndTimesOfApp` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -417,11 +437,34 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`user`@`localhost` PROCEDURE `getWorksLocsAndTimesOfApp`(IN `id` varchar(12))
 begin
-	select distinct(select C.`Название` from `класстехники` C where C.`ID_КлассТехники` = A.`ID_КлассТехники`) as 'Техника', 
+    select 
+    (select `ID_КлассТехники` from `класстехники` where `ID_КлассТехники` = A.`ID_КлассТехники`) as 'ID_КлассТехники',
+    (select C.`Название` from `класстехники` C where C.`ID_КлассТехники` = A.`ID_КлассТехники`) as 'Техника', 
     (select B.`Название` from `объект` B where B.`ID_Объект` = A.`ID_Объект`) as 'Локация',
     (select group_concat(concat('[',D.`Название`,',', D.`Время прибытия`, ',', ADDTIME(D.`Время прибытия`, D.`Длительность`),']')) from `точкамаршрута` D where D.`ID_Заявка` = `id` and D.`ID_КлассТехники` = A.`ID_КлассТехники` and D.`Очередность` = A.`Очередность`) as 'Таймлайн'
     from `точкамаршрута` A where `id` = A.`ID_Заявка` group by `Очередность` order by `Очередность`; 
 end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getWorksTimesOfRealCar` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_unicode_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getWorksTimesOfRealCar`(IN `id_car` int)
+BEGIN
+
+select `Время прибытия` as 'Начало', (addtime(`Время прибытия`, `Длительность`)) as 'Конец' from `точкамаршрута` where `ID_Транспорт` = `id_car`;
+
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -437,4 +480,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-24  2:26:59
+-- Dump completed on 2020-12-25  7:11:24

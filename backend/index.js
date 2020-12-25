@@ -56,28 +56,35 @@ io.on('connection', (socket) => {
     socket.on('takeOrderMutex', (ID) => {
         mutexHandle.addOrder(ID, socket.id);
     });
-    // получить информацию о заявке для второй страницы
+    // получить всю информацию по заявке для второй страницы
     socket.on('getOrderInfo', (ID) => {
-        dbHandle.getOrderInfo(ID).then(orderInfo => {
-            socket.emit('setOrderData', {
-                ID: orderInfo['ID'],
-                Места: orderInfo['Место работы'],
-                Цех: orderInfo['Цех'],
-                ВремяДата: orderInfo['Время и дата выполнения'],
-                Ответственный: orderInfo['Ответственный'],
-                Описание: orderInfo['Описание работы']
+        // отправляем информацию - заголовок заявки
+        dbHandle.getOrderHeaderInfo(ID).then(orderHeaderInfo => {
+            socket.emit('setOrderHeaderInfo', {
+                ID: orderHeaderInfo['ID'],
+                Места: orderHeaderInfo['Место работы'],
+                Цех: orderHeaderInfo['Цех'],
+                ВремяДата: orderHeaderInfo['Время и дата выполнения'],
+                Ответственный: orderHeaderInfo['Ответственный'],
+                Описание: orderHeaderInfo['Описание работы']
+            });
+        });
+        // отправляем информацию - виртуальная техника с таймлайном
+        dbHandle.getVirtVehiclesInfo(ID).then(virtVehiclesInfo => {
+            virtVehiclesInfo.forEach((virtVehicle, index) => {
+                socket.emit('setVirtVehicleInfo', {
+                    index,
+                    virtVehicle
+                });
+                dbHandle.getRealCarList(ID, virtVehicle['ID_КлассТехники'], index + 1).then(realVehicles => {
+                    socket.emit('setRealVehiclesInfo', {
+                        index,
+                        realVehicles
+                    });
+                });
             });
         });
     });
-
-    socket.on('getTimelineInfo', (ID) => {
-        dbHandle.getTimeLineInfo(ID).then(timelinesInfo => {
-            timelinesInfo.forEach(element =>
-            {
-                socket.emit('setTimelineInfo', element);
-            })
-        })
-    })
 
 });
 

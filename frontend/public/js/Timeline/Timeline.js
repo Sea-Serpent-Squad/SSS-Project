@@ -29,6 +29,8 @@ class Timeline extends DOMElement {
                 start: vis.moment.utc(new Date(element['start'])),
                 end: vis.moment.utc(new Date(element['end']))
             });
+            // запоминаем сколько операций добавили на таймлайн
+            ++this.iOfLastItem;
         })
 
         return timeLines;
@@ -46,8 +48,10 @@ class Timeline extends DOMElement {
         orientation = 'top',
     ) {
         super(div);
+        // поле класса iOfLastItem - индекс последнего элемента, т.е операции в таймлайне, чтобы можно было добавить новую операцию в таймлайн (дорогу)
+        this.iOfLastItem = 0;
+        // поле items - наши операции
         this.items = new vis.DataSet(this.formDataSet(date, timeIntervals));
-
         let set = new Set();
         timeIntervals.forEach(element => {
             if (!set.has(element['group'])) set.add(element['group']);
@@ -58,8 +62,9 @@ class Timeline extends DOMElement {
             id: element,
             content: groupNames[i++]
         });
+        // поле groups - список групп таймлайна
         this.groups = new vis.DataSet(array);
-
+        // поле timeline - vis Таймлайн
         this.timeline = new vis.Timeline(this.id, null, {
             stack: false,
             zoomMin: 600000,
@@ -75,6 +80,7 @@ class Timeline extends DOMElement {
     // - Группу нужно добавить, поэтому пересортируем имеющееся и добавим новую группу
     // - workName - название новой группы, в данном случае - название добавляемой работы, если оно не добавляется к имеющемуся
     addItem(date, item, workName = '') {
+        // лямбда-функция для проверки
         let check = function (array, element) {
             for (const value of array) {
                 if (value['id'] === element) return false;
@@ -91,6 +97,7 @@ class Timeline extends DOMElement {
             arr.forEach(element => this.groups.add(element));
         }
         this.items.add(this.formDataSet(date, [item])[0]);
+        this.timeline.fit();
     }
 
     update() {

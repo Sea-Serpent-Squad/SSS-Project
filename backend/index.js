@@ -114,8 +114,11 @@ io.on('connection', (socket) => {
                 values
             });
         })
-    })
+    });
 
+    socket.on('updateRow', (orderID, result) => {
+        dbHandle.updateRow(orderID,result);
+    });
 });
 
 // открываем доступ к статике, т.е к папке public (css, js, картинки)

@@ -141,6 +141,11 @@ function getTimepointForVisTimeline(timeline) {
 async function getFreeDriversOnAppAndOrder(AppOrderDriversList)
 {
     busyDriversList.set(AppOrderDriversList['ord'], AppOrderDriversList['values']);
+    for (const elem of AppOrderDriversList['values'])
+    {
+        driverSet.add(elem['ФИО']);
+        console.log(elem['ФИО']);
+    }
     await addDrivers(AppOrderDriversList);
 }
 
@@ -211,6 +216,7 @@ async function setVirtVehicleInfo(index, virtVehicle) {
     autoLink.setAttribute("data-toggle", 'collapse');
     autoLink.setAttribute("role", 'button');
     autoLink.role = 'button';
+    autoLink.id = `car${index}`;
     autoLink.href = `#vehicle${index}`;
     autoLink.innerHTML = `<span></span><span>${virtVehicle['Техника']}</span>`;
     let location = document.createElement('dd');
@@ -263,6 +269,45 @@ function prepareCollapse() {
             elem.children[0].classList.remove("selected");
         });
     });
+}
+
+let driverSet = new Set(), carSet = new Set();
+
+function checkFilledData()
+{
+    let arrCar = [];
+    let arrDrives = [];
+    for (let i = 0; i < orderCount-1; i++)
+    {
+        arrCar.push(document.querySelector(`#car${i}`).innerText);
+        let select = document.querySelector(`#inlineFormCustom${i+1}`);
+        let text=select.options[select.selectedIndex].text;
+        arrDrives.push(text);
+    }
+
+    for (let j = 0; j < arrCar.length; ++j)
+    {
+        if(!carSet.has(arrCar[j])) {
+            alert('Вы не заполнили все данные!');
+            return false;
+        }
+    }
+
+    for (let k = 0; k < arrDrives.length; ++k)
+    {
+        if(!driverSet.has(arrDrives[k])) {
+            alert('Вы не заполнили все данные!');
+            return false;
+        }
+    }
+    let result = [];
+    for (let p = 0; p < arrCar.length; ++p)
+    {
+        result.push({order: p+1, car: arrCar[p], driver: arrDrives[p]});
+    }
+    console.log({orderID,result});
+    socket.emit('updateRow',orderID,result);
+    nextMsg();
 }
 
 async function addDoneDrivers(ind, name) {
@@ -387,6 +432,7 @@ async function setRealVehiclesInfo(index, realVehicles) {
         let vehicleLink = document.createElement("a");
         vehicleLink.className = "col font-weight-bold";
         vehicleLink.innerText = vehicle['Название'];
+        carSet.add(vehicle['Название']);
         vehicleDiv.append(vehicleLink);
         let isBusy = vehicle['Занято'];
         if (!isBusy) {
@@ -444,6 +490,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     socket.emit('getOrderInfo', orderID);
     //socket.emit('getTimelineInfo', orderID);
     document.getElementById('to_mp').addEventListener('click', () => op_mp());
-    document.getElementById('add_save').addEventListener('click', () => nextMsg());
+    document.getElementById('add_save').addEventListener('click', () => checkFilledData());
     //prepareCollapse();
 });

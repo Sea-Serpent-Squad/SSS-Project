@@ -56,6 +56,15 @@ module.exports = class database {
         return results[0][0];
     }
 
+    async updateRow(orderID, result) {
+        for (const oneRow of result)
+        {
+            console.log(oneRow);
+            await this.query(`call updateRow('${orderID}', ${oneRow['order']}, '${oneRow['driver']}', '${oneRow['car']}')`);
+        }
+        this.query(`update \`заявка\` set \`ID_Статус\` = 3 where \`ID_Заявка\` = '${orderID}'`);
+    }
+
     async isOrderExist(ID) {
         try {
             const results = await this.query(`SELECT COUNT(*) FROM заявка WHERE ID_Заявка = "${ID}"`);

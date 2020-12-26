@@ -24,7 +24,7 @@
     <form>
         <div class="inner-addon left-addon">
             <i class="fas fa-search"></i>
-            <input type="text" id="search-edit" class="form-control fnt" placeholder="Поиск заявки (прим., 18-06-1)">
+            <input type="text" id="search-edit" class="form-control fnt" placeholder="Поиск заявки (прим., 20-10-1)">
         </div>
 
     </form>
@@ -43,16 +43,12 @@
                 </select>
             </div>
             <!-- отступ -->
-            <p style="width: 37.8%"></p>
-            <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center ju" style="margin: 0" for="inlineFormCustomSelect">Дата начала:
-                <input type="date" id="date_start" name="trip-start" class="fnt mr-sm-2 custom-select date-picker" value="2018-07-22" min="2018-01-01" max="2021-12-31" />
+            <p style="width: 63%"></p>
+            <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center ju" style="margin: 0" for="inlineFormCustomSelect">Дата:
+                <input type="date" id="date" name="trip-start" class="fnt mr-sm-2 custom-select date-picker" value="2020-10-31" min="2018-01-01" max="2021-12-31" />
             </label>
-
-            <label class="mr-sm-2 text-nowrap text-sm-left d-flex align-items-center" style="margin: 0;" for="inlineFormCustomSelect">Дата окончания:
-                <input type="date" id="date_end" name="trip-start" class="fnt mr-sm-2 custom-select date-picker" value="2018-07-23" min="2018-01-01" max="2021-12-31" />
-            </label>
+            <button type="button" id="showAllOrders" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">показать все</button>
         </div>
-
     </form>
     <div class="margin-block">
         <form>

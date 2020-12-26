@@ -7,15 +7,8 @@ const socket = io.connect('', {
 });
 
 // - будем запоминать массивы с занятыми водилами каждый с очередностью
-const busyDriversList = new Map()
-const busyCarList = new Map()
-
-let UNuniqueArrays = []
-
-let UNuniqueCars = []
-
-let collisionCarArray = [];
-
+const busyDriversList = new Map();
+let UNuniqueArrays = [];
 let collisionArray = [];
 
 const orderID = window.location.href.split('/')[4];
@@ -28,26 +21,42 @@ socket.on('setAppOrderFreeDrivers', (AppOrderDriversList) =>
     getFreeDriversOnAppAndOrder(AppOrderDriversList);
 });
 
-socket.on('setAppOrderFreeCars', (AppOrderDriversList) =>
-{
-    getFreeCarsOnAppAndOrder(AppOrderDriversList);
-});
-
-socket.on('setOrderStartEndDuration', orderInfo =>
-{
+socket.on('setOrderStartEndDuration', orderInfo => {
     collisionArray = orderInfo;
     setCollisionLogicDrivers();
 });
 
 socket.on('setOrderHeaderInfo', (data) => {
     setOrderHeaderInfo(data);
+    document.querySelector("#to_mp").innerText = "Вернуться в журнал";
+    if (data['Статус'] == "Отклонен")
+    {
+        document.querySelector("#add_save").classList.add('disabled');
+    } else if (data['Статус'] == "Принят") {
+        document.querySelector("#add_save").innerText = "Отклонить заявку";
+    }
 });
 
-socket.on('setVirtVehicleInfo', ({index, virtVehicle}) => {
+socket.on('setVirtVehicleInfo', ({
+    index,
+    virtVehicle
+}) => {
     setVirtVehicleInfo(index, virtVehicle);
 });
 
-socket.on('setRealVehiclesInfo', ({index, realVehicles}) => {
+socket.on('setDoneVehicleInfo', ({
+    index,
+    doneVehicle
+}) => {
+    setVirtVehicleInfo(index, doneVehicle);
+    console.log(doneVehicle);
+    addDoneDrivers(index, doneVehicle['Водитель']);
+});
+
+socket.on('setRealVehiclesInfo', ({
+    index,
+    realVehicles
+}) => {
     setRealVehiclesInfo(index, realVehicles);
     prepareCollapse();
     document.querySelector("a[href='#vehicle0']").click();
@@ -100,10 +109,12 @@ async function setOrderHeaderInfo(value) {
 function getParsedValues(timeline) {
     let collection = [];
     for (let i = 0; i < timeline.length; ++i) {
+        let className = 'bold rounded';
+        if (timeline[i]['Работа'] == "Дорога") className = 'drive rounded';
         collection.push({
             id: i,
-            group: i+1,
-            className: 'bold rounded',
+            group: i + 1,
+            className: className,
             start: timeline[i]['Начало'],
             end: timeline[i]['Конец']
         })
@@ -125,17 +136,12 @@ function getTimepointForVisTimeline(timeline) {
     return collection;
 }
 
-async function getFreeCarsOnAppAndOrder(AppOrderCarsList)
-{
-    await busyCarList.set(AppOrderCarsList['ord'], AppOrderCarsList['values']);
-    //await console.log(busyCarList)
-}
+
 
 async function getFreeDriversOnAppAndOrder(AppOrderDriversList)
 {
-   await busyDriversList.set(AppOrderDriversList['ord'], AppOrderDriversList['values']);
-   //await socket.emit('getOrderStartEndDuration', orderID);
-   await addDrivers(AppOrderDriversList);
+    busyDriversList.set(AppOrderDriversList['ord'], AppOrderDriversList['values']);
+    await addDrivers(AppOrderDriversList);
 }
 
 async function emmitedDriver(value) {
@@ -171,7 +177,6 @@ async function emmitedDriver(value) {
     }
 }
 
-
 async function setCollisionLogicDrivers()
 {
     for (let i = 0; i < collisionArray.length; i++)
@@ -195,13 +200,12 @@ async function setCollisionLogicDrivers()
 }
 
 // добавить виртуальную технику на страницу
-async function setVirtVehicleInfo(index, virtVehicle)
-{
+async function setVirtVehicleInfo(index, virtVehicle) {
     // название виртуальной техники и место работы
     let parent = document.querySelector('#virt-list-of-vehicles');
     let data = document.createElement('dl');
     data.className = `row mt-5`;
-    data.id = `technica${index+1}`
+    data.id = `technica${index + 1}`
     let autoLink = document.createElement('a');
     autoLink.className = 'virt-vehicle col-3 m-auto';
     autoLink.setAttribute("data-toggle", 'collapse');
@@ -229,10 +233,9 @@ async function setVirtVehicleInfo(index, virtVehicle)
     });
     globalDate = virtVehicle['Таймлайн'][0]['Начало'].split(' ')[0];
     timelines.push(new Timeline(`timeline${index}`, globalDate,
-    getParsedValues(virtVehicle['Таймлайн']), groups));
+        getParsedValues(virtVehicle['Таймлайн']), groups));
 
     // - добавление инфы о количестве очердностей
-    // console.log(`${virtVehicle['Техника']}`, orderID, carCount)
     socket.emit('getFreeCarsList', orderID, `${virtVehicle['Техника']}`, carCount++);
 }
 
@@ -262,23 +265,42 @@ function prepareCollapse() {
     });
 }
 
-async function addDrivers(ind)
-{
+async function addDoneDrivers(ind, name) {
+    let data = document.createElement('dl');
+    data.className = 'row mt-5';
+    data.id = `driverOf${ind}`;
+    let drivers = document.createElement('div')
+    drivers.className = 'col-3 font-weight-bold';
+    drivers.innerText = 'Исполнитель';
+    let dddrivers = document.createElement('dd')
+    dddrivers.className = 'col-2'
+    let selections = document.createElement('span')
+    selections.className = 'custom-select mr-sm-2 text-center slc'
+    selections.innerText = name;
+    selections.id = `inlineFormCustom${ind}`
+    data.appendChild(drivers);
+    dddrivers.appendChild(selections);
+    data.appendChild(dddrivers);
+    const tech = document.querySelector(`#technica${ind+1}`);
+    tech.classList.add('nolink');
+    tech.parentNode.insertBefore(data, tech.nextSibling);
+}
+
+async function addDrivers(ind) {
     let data = document.createElement('dl')
     data.className = 'row mt-5 disabled';
     data.id = `driverOf${ind['ord']}`
     let drivers = document.createElement('div')
     drivers.className = 'col-3 font-weight-bold';
-    drivers.innerText = 'Исполнитель'
-
-    data.appendChild(drivers)
+    drivers.innerText = 'Исполнитель';
+    data.appendChild(drivers);
 
     let dddrivers = document.createElement('dd')
     dddrivers.className = 'col-2'
     let selections = document.createElement('select')
     selections.className = 'custom-select mr-sm-2 text-center slc'
     selections.id = `inlineFormCustom${ind['ord']}`
-    await selections.addEventListener('change', () => emmitedDriver(`inlineFormCustom${ind['ord']}`))
+    selections.addEventListener('change', () => emmitedDriver(`inlineFormCustom${ind['ord']}`));
     let names = ind['values'];
 
     let child = document.createElement('option')
@@ -317,8 +339,8 @@ async function vehicleChoice(index, date, start, end) {
                 start: start,
                 end: end
             }, 'Дорога')
-            document.querySelector(`#driverOf${index+1}`).classList.remove('disabled')
-           veh.click();
+            document.querySelector(`#driverOf${index + 1}`).classList.remove('disabled')
+            veh.click();
         });
     });
     socket.emit('getFreeDriverList', orderID, orderCount);
@@ -359,8 +381,7 @@ async function setRealVehiclesInfo(index, realVehicles) {
 
     let groupsFree = [];
     let timelinePointsFree = [];
-    realVehicles.forEach( (vehicle,veh_i) =>
-    {
+    realVehicles.forEach((vehicle, veh_i) => {
         let vehicleDiv = document.createElement("div");
         vehicleDiv.className = `row mt-4 vec${veh_i}`;
         let vehicleLink = document.createElement("a");
@@ -368,16 +389,27 @@ async function setRealVehiclesInfo(index, realVehicles) {
         vehicleLink.innerText = vehicle['Название'];
         vehicleDiv.append(vehicleLink);
         let isBusy = vehicle['Занято'];
-        if (!isBusy)
-        {
+        if (!isBusy) {
             groupsFree.push(vehicle['Название']);
-            if (vehicle['ТочкаМаршрута'].length > 0)
-            {
-                timelinePointsFree.push({group: veh_i, className: 'busy', Начало: vehicle['ТочкаМаршрута'][0]['Начало'], Конец: vehicle['ТочкаМаршрута'][0]['Конец']});
+            if (vehicle['ТочкаМаршрута'].length > 0) {
+                for (const vehPoint of vehicle['ТочкаМаршрута'])
+                {
+                    timelinePointsFree.push({
+                        group: veh_i,
+                        className: 'busy',
+                        Начало: vehPoint['Начало'],
+                        Конец: vehPoint['Конец']
+                    });
+                }
             }
             let startTime = new Date(`${globalDate} ${collisionArray[index]['Начало']}`);
             startTime.setHours(startTime.getHours() + 1);
-            timelinePointsFree.push({group: veh_i, className: 'work', Начало: startTime, Конец: `${globalDate}T${collisionArray[index]['Конец']}`});
+            timelinePointsFree.push({
+                group: veh_i,
+                className: 'work',
+                Начало: startTime,
+                Конец: `${globalDate}T${collisionArray[index]['Конец']}`
+            });
             listOfFreeVehicles.append(vehicleDiv);
         }
     });

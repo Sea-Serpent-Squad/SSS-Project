@@ -24,8 +24,8 @@ io.on('connection', (socket) => {
         }
     });
     // получаем все заявки и добавляем их через событие addRow
-    socket.on('getStartRows', () => {
-        dbHandle.getOrderList().then(values => {
+    socket.on('getStartRows', (date) => {
+        dbHandle.getOrderList(date).then(values => {
             values.forEach(element =>
                 socket.emit('addRow', {
                     Статус: element['Статус'],
@@ -58,9 +58,13 @@ io.on('connection', (socket) => {
     });
     // получить всю информацию по заявке для второй страницы
     socket.on('getOrderInfo', (ID) => {
+        let orderStatus;
         // отправляем информацию - заголовок заявки
         dbHandle.getOrderHeaderInfo(ID).then(orderHeaderInfo => {
+            orderStatus = orderHeaderInfo['Статус'];
+
             socket.emit('setOrderHeaderInfo', {
+                Статус: orderHeaderInfo['Статус'],
                 ID: orderHeaderInfo['ID'],
                 Места: orderHeaderInfo['Место работы'],
                 Цех: orderHeaderInfo['Цех'],
@@ -68,43 +72,47 @@ io.on('connection', (socket) => {
                 Ответственный: orderHeaderInfo['Ответственный'],
                 Описание: orderHeaderInfo['Описание работы']
             });
-        });
-        // инфа по длительности операций (общая, все подзадачи) для конкретной очередности вирт. техники
-        dbHandle.getOrderStartEndDurationOfApp(ID).then(values =>
-        {
-            socket.emit('setOrderStartEndDuration', values);
-        })
 
-        // отправляем информацию - виртуальная техника с таймлайном
-        dbHandle.getVirtVehiclesInfo(ID).then(virtVehiclesInfo => {
-            virtVehiclesInfo.forEach((virtVehicle, index) => {
-                socket.emit('setVirtVehicleInfo', {
-                    index,
-                    virtVehicle
-                });
-                dbHandle.getRealCarList(ID, virtVehicle['ID_КлассТехники'], index + 1).then(realVehicles => {
-                    socket.emit('setRealVehiclesInfo', {
-                        index,
-                        realVehicles
+            if (orderStatus == "Новый") {
+                // инфа по длительности операций (общая, все подзадачи) для конкретной очередности вирт. техники
+                dbHandle.getOrderStartEndDurationOfApp(ID).then(values => {
+                    socket.emit('setOrderStartEndDuration', values);
+                })
+                // отправляем информацию - виртуальная техника с таймлайном
+                dbHandle.getVirtVehiclesInfo(ID).then(virtVehiclesInfo => {
+                    virtVehiclesInfo.forEach((virtVehicle, index) => {
+                        socket.emit('setVirtVehicleInfo', {
+                            index,
+                            virtVehicle
+                        });
+                        dbHandle.getRealCarList(ID, virtVehicle['ID_КлассТехники'], index + 1).then(realVehicles => {
+                            socket.emit('setRealVehiclesInfo', {
+                                index,
+                                realVehicles
+                            });
+                        });
                     });
                 });
-            });
+            } else {
+                // отправляем информацию о готовой странице
+                dbHandle.getDoneVehiclesInfo(ID).then(doneVehiclesInfo => {
+                    doneVehiclesInfo.forEach((doneVehicle, index) => {
+                        socket.emit('setDoneVehicleInfo', {
+                            index,
+                            doneVehicle
+                        });
+                    });
+                });
+            }
         });
     });
 
-    socket.on('getFreeDriverList', (ID, ord) =>
-    {
-        dbHandle.getFreeDriversList(ID, ord).then(values =>
-        {
-            socket.emit('setAppOrderFreeDrivers', {ord, values});
-        })
-    })
-
-    socket.on('getFreeCarsList', (ID, type, ord) =>
-    {
-        dbHandle.getFreeCarsList(ID, type, ord).then(values =>
-        {
-            socket.emit('setAppOrderFreeCars', {ord, values});
+    socket.on('getFreeDriverList', (ID, ord) => {
+        dbHandle.getFreeDriversList(ID, ord).then(values => {
+            socket.emit('setAppOrderFreeDrivers', {
+                ord,
+                values
+            });
         })
     })
 

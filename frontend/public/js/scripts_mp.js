@@ -26,9 +26,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
         let ID = error.split("?")[2];
         alert(`Заявка ${ID} не существует или обрабатывается кем-то другим!`);
     }
-
+    let choiceDate = document.querySelector("#date").value;
     // отправляем запрос на сервер, что хотим загрузить список заявок
-    socket.emit('getStartRows');
+    socket.emit('getStartRows', choiceDate);
+    // фильтр по времени
+    document.querySelector("#date").addEventListener('change', () => {
+        let arr = Array.from(document.querySelector("#app_table").children[1].childNodes);
+        for (let elem of arr){
+            elem.remove();
+        }
+        socket.emit('getStartRows', document.querySelector("#date").value);
+    });
+    document.querySelector("#showAllOrders").addEventListener('click', () => {
+        let arr = Array.from(document.querySelector("#app_table").children[1].childNodes);
+        for (let elem of arr){
+            elem.remove();
+        }
+        socket.emit('getStartRows', "all");
+    });
+
     // добавляем строку с заявкой, полученную с сервера
     socket.on('addRow', (data) => {
         addRow(data);
@@ -44,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
             alert(`Заявка ${ID} обрабатывается кем-то другим!`);
         }
     });
-    // включим сортировку для таблицы (плагин для jQuery - tablesorter)
+    //включим сортировку для таблицы (плагин для jQuery - tablesorter)
     $("#app_table").tablesorter({
         sortList: [
             [1, 0]

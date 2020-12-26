@@ -33,9 +33,15 @@ module.exports = class database {
     };
 
     // - получение списка ID заявок
-    async getOrderIdList() {
+    async getOrderIdList(date) {
         try {
-            const results = await this.query(`SELECT ID_Заявка FROM заявка order by ID_Заявка`);
+            let results;
+            if (date == "all")
+            {
+                results = await this.query(`SELECT ID_Заявка FROM заявка order by ID_Заявка`);
+            } else {
+                results = await this.query(`SELECT ID_Заявка FROM заявка where DATE(\`Дата-время начало\`) = '${date}' order by ID_Заявка`);
+            }
             let list = [];
             results.forEach(element => list.push(element['ID_Заявка']));
             return list;
@@ -62,11 +68,11 @@ module.exports = class database {
         }
     }
     // - получение списка заявок с соответстующими данными заявки
-    async getOrderList() {
+    async getOrderList(date) {
         let filledRowList = [];
         try {
             // получаем список ID заявок
-            let idList = await this.getOrderIdList();
+            let idList = await this.getOrderIdList(date);
             filledRowList = [];
             for (const ID of idList) {
                 let row = await this.getFilledRow(ID);
@@ -119,6 +125,27 @@ module.exports = class database {
             console.error(`BD-'getVirtVehiclesInfo' exception: ${error}`);
         }
         return virtVehiclesInfo;
+    }
+
+    // - для получения информации о выбранной технике у готовой заявки
+    async getDoneVehiclesInfo(ID) {
+        let doneVehiclesInfo = [];
+        try {
+            const results = await this.query(`call getDoneWorksLocsAndTimesOfApp('${ID}')`);
+            for (const element of results[0]) {
+                let timeline = await this.getParsedTimelineInfo(element['Таймлайн']);
+                doneVehiclesInfo.push({
+                    ID_КлассТехники: element['ID_КлассТехники'],
+                    Водитель: element['Водитель'],
+                    Техника: element['Техника'],
+                    Локация: element['Локация'],
+                    Таймлайн: timeline
+                });
+            };
+        } catch (error) {
+            console.error(`BD-'getDoneVehiclesInfo' exception: ${error}`);
+        }
+        return doneVehiclesInfo;
     }
     // Получить начало и конец точек маршрута реальной машины
     async getWorksTimesOfRealCar(ID_car) {
@@ -191,17 +218,6 @@ module.exports = class database {
         }
     }
 
-    async getFreeCarsList(ID_App, type, order)
-    {
-        try
-        {
-            const results = await this.query(`call getFreeCars('${ID_App}', '${type}', ${order})`);
-            return results[0];
-        } catch (error) {
-            console.error(`BD-'getFreeCars' exception: ${error}`);
-        }
-    }
-
     async getOrderStartEndDurationOfApp(ID_App)
     {
         let listElements = [];
@@ -217,6 +233,7 @@ module.exports = class database {
                     list.push(result[0][0]);
                 }
             }
+
             await fillList(listElements, ordersCount);
         }
         catch (error) {

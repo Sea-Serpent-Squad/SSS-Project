@@ -74,6 +74,7 @@ io.on('connection', (socket) => {
         {
             socket.emit('setOrderStartEndDuration', values);
         })
+
         // отправляем информацию - виртуальная техника с таймлайном
         dbHandle.getVirtVehiclesInfo(ID).then(virtVehiclesInfo => {
             virtVehiclesInfo.forEach((virtVehicle, index) => {
@@ -93,10 +94,17 @@ io.on('connection', (socket) => {
 
     socket.on('getFreeDriverList', (ID, ord) =>
     {
-        console.log("dfa");
         dbHandle.getFreeDriversList(ID, ord).then(values =>
         {
             socket.emit('setAppOrderFreeDrivers', {ord, values});
+        })
+    })
+
+    socket.on('getFreeCarsList', (ID, type, ord) =>
+    {
+        dbHandle.getFreeCarsList(ID, type, ord).then(values =>
+        {
+            socket.emit('setAppOrderFreeCars', {ord, values});
         })
     })
 

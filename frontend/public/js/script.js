@@ -8,24 +8,35 @@ const socket = io.connect('', {
 
 // - будем запоминать массивы с занятыми водилами каждый с очередностью
 const busyDriversList = new Map()
+const busyCarList = new Map()
 
-const ordersRealizeTime = new Map()
+let UNuniqueArrays = []
+
+let UNuniqueCars = []
+
+let collisionCarArray = [];
 
 let collisionArray = [];
 
 const orderID = window.location.href.split('/')[4];
 
 let orderCount = 1;
+let carCount = 1;
 
 socket.on('setAppOrderFreeDrivers', (AppOrderDriversList) =>
 {
     getFreeDriversOnAppAndOrder(AppOrderDriversList);
 });
 
+socket.on('setAppOrderFreeCars', (AppOrderDriversList) =>
+{
+    getFreeCarsOnAppAndOrder(AppOrderDriversList);
+});
+
 socket.on('setOrderStartEndDuration', orderInfo =>
 {
     collisionArray = orderInfo;
-    setCollisionLogic(orderInfo);
+    setCollisionLogicDrivers();
 });
 
 socket.on('setOrderHeaderInfo', (data) => {
@@ -114,6 +125,12 @@ function getTimepointForVisTimeline(timeline) {
     return collection;
 }
 
+async function getFreeCarsOnAppAndOrder(AppOrderCarsList)
+{
+    await busyCarList.set(AppOrderCarsList['ord'], AppOrderCarsList['values']);
+    //await console.log(busyCarList)
+}
+
 async function getFreeDriversOnAppAndOrder(AppOrderDriversList)
 {
    await busyDriversList.set(AppOrderDriversList['ord'], AppOrderDriversList['values']);
@@ -121,9 +138,60 @@ async function getFreeDriversOnAppAndOrder(AppOrderDriversList)
    await addDrivers(AppOrderDriversList);
 }
 
-async function setCollisionLogic(orderInfo)
+async function emmitedDriver(value) {
+    let sel = document.getElementById(`${value}`);
+    for (let i = 0; i < UNuniqueArrays.length; i++) {
+        if (UNuniqueArrays[i].includes(value)) {
+            for (let z = 0; z < UNuniqueArrays[i].length; z++) {
+                if (UNuniqueArrays[i][z] != value) {
+                    let names = []
+                    let id = UNuniqueArrays[i][z].replace('inlineFormCustom', '');
+                    for (let j of busyDriversList.get(Number.parseInt(id))) {
+                        names.push(j['ФИО'])
+                    }
+                    names.splice(names.indexOf(sel.options[sel.selectedIndex].text), 1)
+                    let another = document.getElementById(`${UNuniqueArrays[i][z]}`)
+                    let length = another.options.length;
+                    let textLast = another.options[another.selectedIndex].text;
+                    for (let g = length - 1; g >= 0; g--) {
+                        another.options[i] = null;
+                    }
+                    let index = 0;
+                    for (let g = 0; g < names.length; g++) {
+                        let row = document.createElement('option')
+                        row.value = g + '' + 1;
+                        row.innerText = names[g];
+                        if (names[g] == textLast) index = g;
+                        another.appendChild(row);
+                    }
+                    another.options.selectedIndex = index
+                }
+            }
+        }
+    }
+}
+
+
+async function setCollisionLogicDrivers()
 {
-    console.log(collisionArray);
+    for (let i = 0; i < collisionArray.length; i++)
+    {
+        let start = collisionArray[i]['Начало'];
+        let end = collisionArray[i]['Конец'];
+        for (let j = i + 1; j < collisionArray.length; j++)
+        {
+            // - набор не уникальных
+            if ( start ==  collisionArray[j]['Начало'] || start == collisionArray[j]['Конец'] ||
+                 end ==  collisionArray[j]['Начало'] || end == collisionArray[j]['Конец'] ||
+                (start <=  collisionArray[j]['Начало'] && end >=  collisionArray[j]['Конец']) ||
+                (start >=  collisionArray[j]['Начало'] && end <=  collisionArray[j]['Конец']) ||
+                (start <=  collisionArray[j]['Начало'] && end >=  collisionArray[j]['Начало'])
+            )
+            {
+                UNuniqueArrays.push([`inlineFormCustom${collisionArray[i]['Очередность']}`, `inlineFormCustom${collisionArray[j]['Очередность']}`])
+            }
+        }
+    }
 }
 
 // добавить виртуальную технику на страницу
@@ -161,10 +229,11 @@ async function setVirtVehicleInfo(index, virtVehicle)
     });
     globalDate = virtVehicle['Таймлайн'][0]['Начало'].split(' ')[0];
     timelines.push(new Timeline(`timeline${index}`, globalDate,
-        getParsedValues(virtVehicle['Таймлайн']), groups));
+    getParsedValues(virtVehicle['Таймлайн']), groups));
 
     // - добавление инфы о количестве очердностей
-
+    // console.log(`${virtVehicle['Техника']}`, orderID, carCount)
+    socket.emit('getFreeCarsList', orderID, `${virtVehicle['Техника']}`, carCount++);
 }
 
 function prepareCollapse() {
@@ -207,10 +276,15 @@ async function addDrivers(ind)
     let dddrivers = document.createElement('dd')
     dddrivers.className = 'col-2'
     let selections = document.createElement('select')
-    selections.className = 'custom-select mr-sm-2 text-center'
+    selections.className = 'custom-select mr-sm-2 text-center slc'
     selections.id = `inlineFormCustom${ind['ord']}`
-    await selections.addEventListener('change', () => console.log(selections.id))
+    await selections.addEventListener('change', () => emmitedDriver(`inlineFormCustom${ind['ord']}`))
     let names = ind['values'];
+
+    let child = document.createElement('option')
+    child.value = ''+0
+    child.innerText = 'Не выбрано'
+    selections.appendChild(child)
 
     names.forEach((element, index) =>
     {
@@ -288,7 +362,7 @@ async function setRealVehiclesInfo(index, realVehicles) {
     realVehicles.forEach( (vehicle,veh_i) =>
     {
         let vehicleDiv = document.createElement("div");
-        vehicleDiv.className = "row mt-4";
+        vehicleDiv.className = `row mt-4 vec${veh_i}`;
         let vehicleLink = document.createElement("a");
         vehicleLink.className = "col font-weight-bold";
         vehicleLink.innerText = vehicle['Название'];
@@ -296,9 +370,7 @@ async function setRealVehiclesInfo(index, realVehicles) {
         let isBusy = vehicle['Занято'];
         if (!isBusy)
         {
-            console.log(vehicle['Название']);
             groupsFree.push(vehicle['Название']);
-            console.log(vehicle['ТочкаМаршрута']);
             if (vehicle['ТочкаМаршрута'].length > 0)
             {
                 timelinePointsFree.push({group: veh_i, className: 'busy', Начало: vehicle['ТочкаМаршрута'][0]['Начало'], Конец: vehicle['ТочкаМаршрута'][0]['Конец']});

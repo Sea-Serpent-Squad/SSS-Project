@@ -191,6 +191,17 @@ module.exports = class database {
         }
     }
 
+    async getFreeCarsList(ID_App, type, order)
+    {
+        try
+        {
+            const results = await this.query(`call getFreeCars('${ID_App}', '${type}', ${order})`);
+            return results[0];
+        } catch (error) {
+            console.error(`BD-'getFreeCars' exception: ${error}`);
+        }
+    }
+
     async getOrderStartEndDurationOfApp(ID_App)
     {
         let listElements = [];
@@ -206,7 +217,6 @@ module.exports = class database {
                     list.push(result[0][0]);
                 }
             }
-
             await fillList(listElements, ordersCount);
         }
         catch (error) {
